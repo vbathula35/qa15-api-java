@@ -1,0 +1,58 @@
+package com.example.demo.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.object.User;
+
+@RestController
+public class UserController {
+	
+	private static Map<String, User> userRepo = new HashMap<>();
+	
+	static {
+		User venkat = new User();
+		venkat.setFirstName("Venkat");
+		venkat.setLastName("Reddy");
+		venkat.setEmail("venkattest@gmail.com");
+		venkat.setPassword("Admin@123");
+		userRepo.put(venkat.getEmail(), venkat);
+      
+		User shekar = new User();
+		shekar.setFirstName("Shekar");
+		shekar.setLastName("Reddy");
+		shekar.setEmail("shekartest@gmail.com");
+		shekar.setPassword("Admin@123");
+		userRepo.put(shekar.getEmail(), shekar);
+	}
+	
+	@GetMapping("/getUserDetails")
+	public ResponseEntity<Object> getUserDetails(@RequestHeader String email) {
+		return new ResponseEntity<> (userRepo.equals(email), HttpStatus.OK);
+	}
+	
+	@PostMapping("/createUser")
+	public ResponseEntity<Object> createUser(@RequestBody User user) {
+		return new ResponseEntity<> ("User is created successfully", HttpStatus.CREATED);
+	}
+	
+	@PutMapping("/updateUser")
+	public User updateUser(@RequestBody User user) {
+		return user;
+	}
+	
+	@DeleteMapping("/deleteUser")
+	public String deleteUser() {
+		return "This is Delete User";
+	}
+}

@@ -22,8 +22,8 @@ import com.example.demo.service.FirebaseService;
 import io.swagger.annotations.Api;
 
 @RestController
-//@RequestMapping("/user")
-//@Api(value = "User Api", description = "Testing User Controller")
+@RequestMapping("/user")
+@Api(value = "User Api", description = "Testing User Controller")
 public class UserController {
 	
 	private static Map<String, User> userRepo = new HashMap<>();

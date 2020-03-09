@@ -1,0 +1,71 @@
+package com.example.demo.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.object.User;
+import com.example.demo.service.FirebaseService;
+
+@RestController
+public class UserController {
+	
+	private static Map<String, User> userRepo = new HashMap<>();
+	
+	static {
+		User venkat = new User();
+		venkat.setFirstName("Venkat");
+		venkat.setLastName("Reddy");
+		venkat.setEmail("venkattest@gmail.com");
+		venkat.setPassword("Admin@123");
+		userRepo.put(venkat.getEmail(), venkat);
+      
+		User shekar = new User();
+		shekar.setFirstName("Shekar");
+		shekar.setLastName("Reddy");
+		shekar.setEmail("shekartest@gmail.com");
+		shekar.setPassword("Admin@123");
+		userRepo.put(shekar.getEmail(), shekar);
+	}
+	
+	@Autowired
+	FirebaseService firebaseService;
+	
+	@GetMapping("/getUsers")
+	public ResponseEntity<Object> getUserDetails() {
+		return new ResponseEntity<> (userRepo.values(), HttpStatus.OK);
+	}
+	
+	@GetMapping("/getUserDetails")
+	public ResponseEntity<Object> getUserDetails(@RequestHeader String email) {
+		return new ResponseEntity<> (userRepo.get(email), HttpStatus.OK);
+	}
+	
+	@PostMapping("/createUser")
+	public ResponseEntity<Object> createUser(@RequestBody User user) throws InterruptedException, ExecutionException {
+//		userRepo.put(user.getEmail(), user);
+		return new ResponseEntity<> (firebaseService.createNewUser(user), HttpStatus.CREATED);
+	}
+	
+	@PutMapping("/updateUser")
+	public User updateUser(@RequestBody User user) {
+		return user;
+	}
+	
+	@DeleteMapping("/deleteUser")
+	public ResponseEntity<Object> deleteUser(@RequestHeader String email) {
+		userRepo.remove(email);
+		return new ResponseEntity<> (userRepo.values(), HttpStatus.OK);
+	}
+}
