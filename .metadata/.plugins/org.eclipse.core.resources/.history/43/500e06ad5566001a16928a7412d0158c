@@ -1,0 +1,6 @@
+# server.servlet.context-path=/venkat
+
+
+server.servlet.session.cookie.domain=.XXXX.com
+server.servlet.session.cookie.http-only=true
+server.servlet.session.cookie.path=/

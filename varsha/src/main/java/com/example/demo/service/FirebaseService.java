@@ -1,10 +1,19 @@
 package com.example.demo.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.object.User;
@@ -64,12 +73,40 @@ public class FirebaseService {
 			Map<String, Object> data = document.getData();
 //			output.add(data);
 			User newUser = new User();
-			newUser.setEmail(String.valueOf(data.get("email")));
+			newUser.setEmail
+			(String.valueOf(data.get("email")));
 			newUser.setFirstName(String.valueOf(data.get("firstName")));
 			newUser.setLastName(String.valueOf(data.get("lastName")));
 			newUser.setPassword(String.valueOf(data.get("password")));
 			users.add(newUser);
 		}		
 		return users;
+	}
+	
+	
+	public HttpHeaders authenticate(String email, String password) throws InterruptedException, ExecutionException {
+//		Cookie cookie = new Cookie("user", email);
+//		cookie.setMaxAge(8 * 60 * 60);
+//		cookie.setSecure(true);
+//		cookie.setHttpOnly(true);
+//		cookie.setPath("/");
+
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Set-Cookie","user="+email);
+        headers.setExpires(8 * 60 * 60);
+        ResponseEntity.status(HttpStatus.OK).headers(headers).build();
+		
+		return headers;
+	}
+	
+	public String readCookie(HttpServletRequest request) throws InterruptedException, ExecutionException {
+		Cookie[] cookies = request.getCookies();
+	    if (cookies != null) {
+	        return Arrays.stream(cookies)
+	                .map(c -> c.getName() + "=" + c.getValue()).collect(Collectors.joining(", "));
+	    }
+
+	    return "No cookies";
 	}
 }

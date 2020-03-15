@@ -4,19 +4,29 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.RequestWrapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.object.User;
+import com.example.demo.object.UserCredentials;
 import com.example.demo.service.FirebaseService;
 
 import io.swagger.annotations.Api;
@@ -71,4 +81,17 @@ public class UserController {
 	public ResponseEntity<Object> deleteUser(@RequestHeader String email) throws InterruptedException, ExecutionException {
 		return new ResponseEntity<> (firebaseService.deleteUser(email), HttpStatus.OK);
 	}
+	
+	
+	@PostMapping("/login")
+	public ResponseEntity<?> login(@RequestBody UserCredentials UserCredentials, HttpServletResponse response) throws InterruptedException, ExecutionException {
+		HttpHeaders coockie = firebaseService.authenticate(UserCredentials.getEmail(), UserCredentials.getPassword());
+		return new ResponseEntity<> (coockie, HttpStatus.OK);
+	}
+	
+	@GetMapping("/getCoockies")
+	public ResponseEntity<?> login(HttpServletRequest request) throws InterruptedException, ExecutionException {
+		return new ResponseEntity<> (firebaseService.readCookie(request), HttpStatus.OK);
+	}
+	
 }
