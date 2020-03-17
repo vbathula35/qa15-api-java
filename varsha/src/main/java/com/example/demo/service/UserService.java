@@ -10,12 +10,11 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.model.UserBo;
 import com.example.demo.model.Users;
+import com.example.demo.repository.UserAuthRepository;
 import com.example.demo.repository.UsersRepository;
 
 @Service
@@ -25,6 +24,7 @@ public class UserService {
 	public UserService(UsersRepository usersRepository) {
 		this.usersRepository = usersRepository;
 	}
+
 	
 	public UserBo getUser(String user) throws InterruptedException, ExecutionException {
 		Users userEntity = usersRepository.findById(user).get();
@@ -87,13 +87,20 @@ public class UserService {
 	
 	
 	public String authenticate(String email, String password) throws InterruptedException, ExecutionException {
-		String response = usersRepository.loginAuthentication(email, password);
-		
-		HttpHeaders headers = new HttpHeaders();
-        headers.add("Set-Cookie","user="+email);
-        headers.setExpires(8 * 60 * 60);
-        ResponseEntity.status(HttpStatus.OK).headers(headers).build();
-		return response;
+		String authres = usersRepository.loginAuthentication(email, password);
+//		Response res = new Response();
+//		if (authres != null || authres != "") {
+//			HttpHeaders headers = new HttpHeaders();
+//	        headers.add("Set-Cookie","V-OWNER="+authres);
+//	        headers.setExpires(8 * 60 * 60);
+//	        ResponseEntity.status(HttpStatus.OK).headers(headers).build();
+//			res.setStatus("000");
+//			res.setDescription("Success");
+//	        return res;
+//		}
+//		res.setStatus("001");
+//		res.setDescription("Authentication Failed");
+		return authres;
 	}
 	
 	public String readCookie(HttpServletRequest request) throws InterruptedException, ExecutionException {
@@ -104,6 +111,15 @@ public class UserService {
 	    }
 
 	    return "No cookies";
+	}
+	
+	public HttpHeaders logout() throws InterruptedException, ExecutionException {
+		HttpHeaders headers = new HttpHeaders();
+		headers.remove("V-OWNER");
+//		Response res = new Response();
+//		res.setStatus("001");
+//		res.setDescription("Authentication Failed");
+		return headers;
 	}
 
 }

@@ -1,14 +1,10 @@
 package com.example.demo.controller;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,9 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.Users;
-import com.example.demo.object.User;
+import com.example.demo.object.Response;
 import com.example.demo.object.UserCredentials;
-import com.example.demo.service.FirebaseService;
 import com.example.demo.service.UserService;
 
 import io.swagger.annotations.Api;
@@ -41,9 +36,7 @@ public class UserController {
 	public ResponseEntity<?> login(HttpServletRequest request) throws InterruptedException, ExecutionException {
 		return new ResponseEntity<> (userService.readCookie(request), HttpStatus.OK);
 	}
-	
-	
-	
+
 	@GetMapping("/getUser")
 	public ResponseEntity<Object> getUser(@RequestHeader String email) throws InterruptedException, ExecutionException {
 		return new ResponseEntity<> (userService.getUser(email), HttpStatus.OK);
@@ -77,9 +70,17 @@ public class UserController {
 	}
 	
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody UserCredentials UserCredentials, HttpServletResponse response) throws InterruptedException, ExecutionException {
-		String coockie = userService.authenticate(UserCredentials.getEmail(), UserCredentials.getPassword());
-		return new ResponseEntity<> (coockie, HttpStatus.OK);
+	public ResponseEntity<?> login(@RequestBody UserCredentials UserCredentials) throws InterruptedException, ExecutionException {
+//		String res = ;
+//		if (res.getStatus() == "000") {
+//			return new ResponseEntity<> (res, HttpStatus.OK);
+//		}
+		return new ResponseEntity<> (userService.authenticate(UserCredentials.getEmail(), UserCredentials.getPassword()), HttpStatus.OK);
+	}
+	
+	@GetMapping("/logout")
+	public ResponseEntity<?> logout() throws InterruptedException, ExecutionException {
+		return new ResponseEntity<> (userService.logout(), HttpStatus.OK);
 	}
 	
 	
