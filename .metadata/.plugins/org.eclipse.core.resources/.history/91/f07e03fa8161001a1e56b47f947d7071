@@ -1,9 +1,0 @@
-package com.example.demo.service;
-
-import java.io.FileInputStream;
-
-public class FirebaseInitialize {
-	public void initialize() {
-		FileInputStream
-	}
-}
