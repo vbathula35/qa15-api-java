@@ -13,6 +13,7 @@ public class UserBo {
 	private String state;
 	private String country;
 	private Integer zipCode;
+	private String phoneNumber;
 
 	private String email;
 	private Date registerDate;
@@ -91,6 +92,14 @@ public class UserBo {
 
 	public void setZipCode(Integer zipCode) {
 		this.zipCode = zipCode;
+	}
+	
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 	public String getEmail() {

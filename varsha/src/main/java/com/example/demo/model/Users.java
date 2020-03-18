@@ -31,6 +31,10 @@ public class Users {
 	private String country;
 	@Column (name = "zipCode")
 	private Integer zipCode;
+	@Column (name = "phoneNumber")
+	private String phoneNumber;
+	
+
 	
 
 	public Users() {
@@ -129,8 +133,13 @@ public class Users {
 	public void setZipCode(Integer zipCode) {
 		this.zipCode = zipCode;
 	}
+	
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
 
-	
-	
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
 	
 }

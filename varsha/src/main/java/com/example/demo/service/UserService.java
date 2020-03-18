@@ -10,19 +10,25 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.model.UserBo;
 import com.example.demo.model.Users;
-import com.example.demo.repository.UserAuthRepository;
+import com.example.demo.object.Response;
+import com.example.demo.object.UserAuthObj;
+import com.example.demo.repository.UsersAuthRepository;
 import com.example.demo.repository.UsersRepository;
 
 @Service
 public class UserService {
 	
 	private UsersRepository usersRepository;
-	public UserService(UsersRepository usersRepository) {
+	private UsersAuthRepository usersAuthRepository;
+	public UserService(UsersRepository usersRepository, UsersAuthRepository usersAuthRepository) {
 		this.usersRepository = usersRepository;
+		this.usersAuthRepository = usersAuthRepository;
 	}
 
 	
@@ -38,6 +44,7 @@ public class UserService {
 		userBoEntity.setState(userEntity.getState());
 		userBoEntity.setZipCode(userEntity.getZipCode());
 		userBoEntity.setCountry(userEntity.getCountry());
+		userBoEntity.setPhoneNumber(userEntity.getPhoneNumber());
 		userBoEntity.setUserRole(userEntity.getUserRole());
 		userBoEntity.setUserStatus(userEntity.getUserAuth().getUserStatus());
 		userBoEntity.setfPPin(userEntity.getUserAuth().getfPPin());
@@ -60,6 +67,7 @@ public class UserService {
 			 bo.setState(entity.getState());
 			 bo.setZipCode(entity.getZipCode());
 			 bo.setCountry(entity.getCountry());
+			 bo.setPhoneNumber(entity.getPhoneNumber());
 			 bo.setUserRole(entity.getUserRole());
 			 bo.setUserStatus(entity.getUserAuth().getUserStatus());
 			 bo.setfPPin(entity.getUserAuth().getfPPin());
@@ -86,23 +94,24 @@ public class UserService {
 	}
 	
 	
-	public String authenticate(String email, String password) throws InterruptedException, ExecutionException {
-		String authres = usersRepository.loginAuthentication(email, password);
-//		Response res = new Response();
-//		if (authres != null || authres != "") {
-//			HttpHeaders headers = new HttpHeaders();
-//	        headers.add("Set-Cookie","V-OWNER="+authres);
-//	        headers.setExpires(8 * 60 * 60);
-//	        ResponseEntity.status(HttpStatus.OK).headers(headers).build();
-//			res.setStatus("000");
-//			res.setDescription("Success");
-//	        return res;
-//		}
-//		res.setStatus("001");
-//		res.setDescription("Authentication Failed");
+	public Object authenticate(String email, String password) throws InterruptedException, ExecutionException {
+		Object[] authres = (Object[]) usersAuthRepository.loginAuthentication(email, password);
+		Response res = new Response();
+		if (authres != null && authres.length > 0) {
+			UserAuthObj userAuthObj = new UserAuthObj();
+			userAuthObj.setEmail(String.valueOf(authres[0]));
+			userAuthObj.setRegisterDate(String.valueOf(authres[1]));
+			userAuthObj.setUserStatus(String.valueOf(authres[2]));
+	        return userAuthObj;
+		}
+		if (authres == null) {
+			return authres;
+		}
 		return authres;
 	}
 	
+
+
 	public String readCookie(HttpServletRequest request) throws InterruptedException, ExecutionException {
 		Cookie[] cookies = request.getCookies();
 	    if (cookies != null) {
@@ -111,15 +120,6 @@ public class UserService {
 	    }
 
 	    return "No cookies";
-	}
-	
-	public HttpHeaders logout() throws InterruptedException, ExecutionException {
-		HttpHeaders headers = new HttpHeaders();
-		headers.remove("V-OWNER");
-//		Response res = new Response();
-//		res.setStatus("001");
-//		res.setDescription("Authentication Failed");
-		return headers;
 	}
 
 }
