@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.demo.model.UserAuth;
-import com.example.demo.object.UserAuthObj;
 
 public interface UsersAuthRepository extends JpaRepository<UserAuth, Long> {
 	@Query List<UserAuth> findByRegisterDate(Date registerDate);

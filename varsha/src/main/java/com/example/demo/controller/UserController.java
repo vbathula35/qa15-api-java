@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.model.UserBo;
 import com.example.demo.model.Users;
 import com.example.demo.object.Response;
 import com.example.demo.service.UserService;
@@ -40,7 +38,7 @@ public class UserController {
 	}
 
 	@GetMapping("/getUser")
-	public ResponseEntity<Object> getUser(@CookieValue(value = "user") String loginUserId) throws InterruptedException, ExecutionException {
+	public ResponseEntity<Object> getUser(@RequestHeader(name = "V-OWNER", required = true) String loginUserId) throws InterruptedException, ExecutionException {
 		return new ResponseEntity<> (userService.getUser(loginUserId), HttpStatus.OK);
 	}
 	
