@@ -37,18 +37,22 @@ public class UserUnprotectedController {
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody UserCredentials UserCredentials, HttpServletResponse servletResponse) throws InterruptedException, ExecutionException {
 		Object resp = userService.authenticate(UserCredentials.getEmail(), UserCredentials.getPassword());
+		
 		if (resp != null) {
 			UserAuthObj response = new UserAuthObj();
 			response = (UserAuthObj) resp;
 			if (response.getUserStatus().equals("active")) {
 				HttpHeaders headers = new HttpHeaders();
-		        headers.add("Set-Cookie","V-OWNER="+ response.getEmail());
+				headers.set("V-OWNER", response.getEmail());
 		        headers.setExpires(8 * 60 * 60);
-		        ResponseEntity.status(HttpStatus.OK).headers(headers).build();				
+		       
+		        
 		        Cookie cookie = new Cookie("user", response.getEmail());
 				cookie.setMaxAge(8 * 60 * 60);
+				cookie.setPath("/");
 				servletResponse.addCookie(cookie);
-				return new ResponseEntity<>(response,headers,HttpStatus.OK);
+				
+				return ResponseEntity.ok().headers(headers).body(response);
 			} else {
 				return new ResponseEntity<> (response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}

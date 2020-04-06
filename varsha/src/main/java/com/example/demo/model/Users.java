@@ -52,7 +52,6 @@ public class Users {
 		this.userAuth = userAuth;
 	}
 	
-	
 
 	public String getEmail() {
 		return email;

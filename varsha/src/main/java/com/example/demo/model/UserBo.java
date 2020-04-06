@@ -1,6 +1,9 @@
 package com.example.demo.model;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class UserBo {
 
@@ -20,7 +23,12 @@ public class UserBo {
 	private Integer pin;
 	private Integer fPPin;
 	private String userStatus;
+	
+	private List<String> userFeatures;
+	private List<String> userPermissions;
 
+
+	
 
 	public String getFirstName() {
 		return firstName;
@@ -141,5 +149,22 @@ public class UserBo {
 	public void setUserStatus(String userStatus) {
 		this.userStatus = userStatus;
 	}
+	
+	public List<String> getUserFeatures() {
+		return userFeatures;
+	}
+
+	public void setUserFeatures(List<String> list) {
+		this.userFeatures = list;
+	}
+
+	public List<String> getUserPermissions() {
+		return userPermissions;
+	}
+
+	public void setUserPermissions(List<String> userPermissions) {
+		this.userPermissions = userPermissions;
+	}
+
 
 }
