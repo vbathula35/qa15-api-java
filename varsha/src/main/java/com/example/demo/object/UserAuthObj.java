@@ -1,8 +1,10 @@
 package com.example.demo.object;
 
+import java.util.Date;
+
 public class UserAuthObj {
 	private String email;
-	private String registerDate;
+	private Date registerDate;
 	private String userStatus;
 	public String getEmail() {
 		return email;
@@ -10,10 +12,10 @@ public class UserAuthObj {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getRegisterDate() {
+	public Date getRegisterDate() {
 		return registerDate;
 	}
-	public void setRegisterDate(String registerDate) {
+	public void setRegisterDate(Date registerDate) {
 		this.registerDate = registerDate;
 	}
 	public String getUserStatus() {

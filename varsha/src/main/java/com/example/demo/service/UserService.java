@@ -198,7 +198,6 @@ public class UserService {
 		
 		serviceRes.setStatus("001");
 		serviceRes.setDescription("Email Id already exist in our records. Please try with different email id.");
-		
 		return serviceRes;
 	}
 	
@@ -209,18 +208,19 @@ public class UserService {
 	
 	
 	public Object authenticate(String email, String password) throws InterruptedException, ExecutionException {
-		Object[] authres = (Object[]) usersAuthRepository.loginAuthentication(email, password);
-		if (authres != null && authres.length > 0) {
-			UserAuthObj userAuthObj = new UserAuthObj();
-			userAuthObj.setEmail(String.valueOf(authres[0]));
-			userAuthObj.setRegisterDate(String.valueOf(authres[1]));
-			userAuthObj.setUserStatus(String.valueOf(authres[2]));
-	        return userAuthObj;
+		
+		Optional<UserAuth> validateUserAuthEntity = getUserAuthEntity(email);
+		if (validateUserAuthEntity.isPresent()) {
+			if (GeneralUtilities.compareBCryptValue(password, validateUserAuthEntity.get().getPassword())) {
+				UserAuthObj userAuthObj = new UserAuthObj();
+				userAuthObj.setEmail(validateUserAuthEntity.get().getEmail());
+				userAuthObj.setRegisterDate(validateUserAuthEntity.get().getRegisterDate());
+				userAuthObj.setUserStatus(validateUserAuthEntity.get().getUserStatus());
+				return userAuthObj;
+			}
+			return null;
 		}
-		if (authres == null) {
-			return authres;
-		}
-		return authres;
+		return null;
 	}
 	
 	

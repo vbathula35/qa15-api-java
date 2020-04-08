@@ -23,4 +23,10 @@ public class GeneralUtilities {
 		String endoced  = new BCryptPasswordEncoder(strength, new SecureRandom()).encode(val);
 	    return endoced;
 	}
+	
+	public static boolean compareBCryptValue(String val, String encodedPassword) {
+		int strength = 10;
+		Boolean status = new BCryptPasswordEncoder(strength, new SecureRandom()).matches(val, encodedPassword);
+		return status;
+	}
 }
