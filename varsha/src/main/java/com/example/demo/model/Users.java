@@ -7,8 +7,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 @Entity
 @Table(name = "varsha_user")
+
 public class Users {
 	@Id
 	@Column(name = "email")
@@ -17,28 +20,32 @@ public class Users {
 	private String firstName;
 	@Column(name = "lastName")
 	private String lastName;
+	
 	@Column (name = "userRole")
+	@JsonInclude(JsonInclude.Include.NON_NULL) 
 	private String userRole;
+	
 	@Column (name = "addressLine1")
 	private String addressLine1;
+	
 	@Column (name = "addressLine2")
+	@JsonInclude(JsonInclude.Include.NON_NULL) 
 	private String addressLine2;
+	
 	@Column (name = "city")
 	private String city;
 	@Column (name = "state")
 	private String state;
+	
 	@Column (name = "country")
+	@JsonInclude(JsonInclude.Include.NON_NULL) 
 	private String country;
+	
 	@Column (name = "zipCode")
 	private Integer zipCode;
 	@Column (name = "phoneNumber")
 	private String phoneNumber;
-	
 
-	
-
-	public Users() {
-	}
 	
 	@OneToOne
 	@JoinColumn(name = "email", referencedColumnName = "email", insertable = false , updatable = true)
@@ -49,7 +56,10 @@ public class Users {
 	}
 
 	public void setUserAuth(UserAuth userAuth) {
-		this.userAuth = userAuth;
+		this.userAuth = userAuth;	
+	}
+	
+	public Users() {
 	}
 	
 

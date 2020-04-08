@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.model.Users;
+import com.example.demo.object.PinValidation;
 import com.example.demo.object.Response;
+import com.example.demo.object.User;
 import com.example.demo.object.UserAuthObj;
 import com.example.demo.object.UserCredentials;
 import com.example.demo.service.UserService;
+import com.example.demo.utils.GeneralUtilities;
 
 import io.swagger.annotations.Api;
 
@@ -29,15 +31,19 @@ public class UserUnprotectedController {
 	@Autowired
 	UserService userService;
 	
+	@PostMapping("/activate")
+	public ResponseEntity<?> activate(@RequestBody PinValidation userPin) throws InterruptedException, ExecutionException {
+		return userService.activateUser(userPin);
+	}
+	
 	@PostMapping("/register")
-	public ResponseEntity<Object> register(@RequestBody Users user) throws InterruptedException, ExecutionException {
-		return new ResponseEntity<> (userService.registerNewUser(user), HttpStatus.CREATED);
+	public ResponseEntity<Response> register(@RequestBody User user) throws InterruptedException, ExecutionException {
+		return new ResponseEntity<Response> (userService.registerNewUser(user), HttpStatus.CREATED);
 	}
 	
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody UserCredentials UserCredentials, HttpServletResponse servletResponse) throws InterruptedException, ExecutionException {
 		Object resp = userService.authenticate(UserCredentials.getEmail(), UserCredentials.getPassword());
-		
 		if (resp != null) {
 			UserAuthObj response = new UserAuthObj();
 			response = (UserAuthObj) resp;
@@ -54,12 +60,9 @@ public class UserUnprotectedController {
 				
 				return ResponseEntity.ok().headers(headers).body(response);
 			} else {
-				return new ResponseEntity<> (response, HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity<> (response, HttpStatus.OK);
 			}
 		};
-		Response res = new Response();
-		res.setStatus("001");
-		res.setDescription("Invalid credentials. Please try with valid credentials.");
-		return new ResponseEntity<> (res,  HttpStatus.INTERNAL_SERVER_ERROR); 
+		return GeneralUtilities.response("001", "Invalid credentials. Please try with valid credentials.", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

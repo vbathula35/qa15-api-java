@@ -1,6 +1,7 @@
 package com.example.demo.constant;
 
 public class AppConstant {
+	public static final String COUNTRY = "USA";
 	public static final String ACTIVE_USER = "active";
 	public static final String PENDING_USER = "pending";
 	public static final String LOCKED_USER = "locked";

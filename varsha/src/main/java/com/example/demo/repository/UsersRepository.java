@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.example.demo.model.Users;
 
 public interface UsersRepository extends JpaRepository<Users, String> {
+	@Query List<Users> findByEmail(String email);
 	@Query List<Users> findByFirstName(String firstName);
 	@Query List<Users> findByLastName(String lastName);
 	@Query List<Users> findByAddressLine1(String addressLine1);
