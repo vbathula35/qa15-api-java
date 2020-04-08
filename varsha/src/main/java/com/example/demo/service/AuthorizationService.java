@@ -12,7 +12,6 @@ import com.example.demo.model.Roles;
 import com.example.demo.object.Feature;
 import com.example.demo.object.Permission;
 import com.example.demo.object.Role;
-import com.example.demo.repository.FeaturePermissionRelationshipRepository;
 import com.example.demo.repository.FeaturesRepository;
 import com.example.demo.repository.PermissionsRepository;
 import com.example.demo.repository.RoleFeaturePermissionRelationshipRepository;
@@ -26,7 +25,6 @@ public class AuthorizationService {
 	private FeaturesRepository featuresRepository;
 	private PermissionsRepository permissionsRepository;
 	private RoleFeatureRelationshipRepository roleFeatureRelationshipRepository;
-	private FeaturePermissionRelationshipRepository featurePermissionRelationshipRepository;
 	private RoleFeaturePermissionRelationshipRepository roleFeaturePermissionRelationshipRepository;
 	
 	public AuthorizationService(RolesRepository rolesRepository, 
@@ -34,13 +32,11 @@ public class AuthorizationService {
 			UserFeaturesRepository userFeaturesRepository,
 			PermissionsRepository permissionsRepository,
 			RoleFeatureRelationshipRepository roleFeatureRelationshipRepository,
-			FeaturePermissionRelationshipRepository featurePermissionRelationshipRepository,
 			RoleFeaturePermissionRelationshipRepository roleFeaturePermissionRelationshipRepository) {
 		this.rolesRepository = rolesRepository;
 		this.featuresRepository = featuresRepository;
 		this.permissionsRepository = permissionsRepository;
 		this.roleFeatureRelationshipRepository = roleFeatureRelationshipRepository;
-		this.featurePermissionRelationshipRepository = featurePermissionRelationshipRepository;
 		this.roleFeaturePermissionRelationshipRepository = roleFeaturePermissionRelationshipRepository;
 	}
 	

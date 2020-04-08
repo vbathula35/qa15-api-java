@@ -1,7 +1,5 @@
 package com.example.demo.object;
 
-import javax.persistence.Column;
-
 public class Permission {
 	private String permissionCode;
 	private String permissionName;
