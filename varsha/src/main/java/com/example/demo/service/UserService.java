@@ -253,13 +253,7 @@ public ListResponse getAllUsers(AllUserRequest request) throws InterruptedExcept
 			}
 		}
 		return GeneralUtilities.response("001", "Email Id already exist in our records. Please try with different email id.", HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-	
-	public void deleteUser(String email) throws InterruptedException, ExecutionException {
-		usersRepository.deleteById(email);
-		return;
-	}
-	
+	}	
 	
 	public Object authenticate(String email, String password) throws InterruptedException, ExecutionException {
 		
@@ -334,6 +328,39 @@ public ListResponse getAllUsers(AllUserRequest request) throws InterruptedExcept
 		}
 		return GeneralUtilities.response("003", "Please provider required fields and assign atleaset one feature and permission.", HttpStatus.INTERNAL_SERVER_ERROR) ;
 	}
+	
+	
+	public ResponseEntity<Response> deActivateUsers(List<String> users) throws InterruptedException, ExecutionException {
+		if (!users.isEmpty() || users.size() > 0) {
+			users.forEach(user -> {
+				usersAuthRepository.saveUserStatusByEmail(user, AppConstant.INACTIVE_USER);
+			});
+			return GeneralUtilities.response("000", "User(s) de activated successfully.", HttpStatus.OK);
+		}
+		return GeneralUtilities.response("003", "Please provide atlease one user.", HttpStatus.INTERNAL_SERVER_ERROR) ;
+	}
+	
+	public ResponseEntity<Response> activateUsers(List<String> users) throws InterruptedException, ExecutionException {
+		if (!users.isEmpty() || users.size() > 0) {
+			users.forEach(user -> {
+				usersAuthRepository.saveUserStatusByEmail(user, AppConstant.ACTIVE_USER);
+			});
+			return GeneralUtilities.response("000", "User(s) activated successfully.", HttpStatus.OK);
+		}
+		return GeneralUtilities.response("003", "Please provide atlease one user.", HttpStatus.INTERNAL_SERVER_ERROR) ;
+	}
+	
+	public ResponseEntity<Response> deleteUser(List<String> users) throws InterruptedException, ExecutionException {
+		if (!users.isEmpty() || users.size() > 0) {
+			users.forEach(user -> {
+				usersAuthRepository.deleteById(user);
+				usersRepository.deleteById(user);
+			});
+			return GeneralUtilities.response("000", "User(s) deleted successfully.", HttpStatus.OK);
+		}
+		return GeneralUtilities.response("003", "Please provide atlease one user.", HttpStatus.INTERNAL_SERVER_ERROR) ;
+	}
+	
 	
 	public String readCookie(HttpServletRequest request) throws InterruptedException, ExecutionException {
 		Cookie[] cookies = request.getCookies();

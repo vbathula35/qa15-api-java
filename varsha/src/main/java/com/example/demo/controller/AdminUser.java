@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -84,12 +86,42 @@ public class AdminUser {
 		return new ResponseEntity<> (userService.createNewUser(user), HttpStatus.CREATED);
 	}
 	
-	@DeleteMapping("/deleteUser")
-	public ResponseEntity<?> deleteUser(@RequestBody String email, @CookieValue(value = "V-OWNER") final String loginUserId) throws InterruptedException, ExecutionException {
-		userService.deleteUser(email);
-		return new ResponseEntity<> ("Success", HttpStatus.OK);
+	@PutMapping("/activateUsers")
+	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
+	public ResponseEntity<Response> activateUsers(@CookieValue("user") String user, @RequestBody List<String> users) throws InterruptedException, ExecutionException {
+		if (userService.isValidActiveUser(user)) {
+			if(userService.isAdminUser(user) || userService.isSuperAdminUser(user)) {
+				return userService.activateUsers(users);
+			}
+			return GeneralUtilities.response("002", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
+		}
+		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
 	}
 	
+	@PutMapping("/deActivateUsers")
+	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
+	public ResponseEntity<Response> deActivateUsers(@CookieValue("user") String user, @RequestBody List<String> users) throws InterruptedException, ExecutionException {
+		if (userService.isValidActiveUser(user)) {
+			if(userService.isAdminUser(user) || userService.isSuperAdminUser(user)) {
+				return userService.deActivateUsers(users);
+			}
+			return GeneralUtilities.response("002", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
+		}
+		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
+	}
+	
+	
+	@PostMapping("/deleteUsers")
+	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
+	public ResponseEntity<Response> deleteUsers(@CookieValue("user") String user, @RequestBody List<String> users) throws InterruptedException, ExecutionException {
+		if (userService.isValidActiveUser(user)) {
+			if(userService.isAdminUser(user) || userService.isSuperAdminUser(user)) {
+				return userService.deleteUser(users);
+			}
+			return GeneralUtilities.response("002", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
+		}
+		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
+	}
 	
 	
 }
