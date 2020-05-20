@@ -7,7 +7,7 @@ public class ListResponse {
 	private long total;
 	private long pageNumber;
 	private long pageSize;
-	private List<Object> results;
+	private List<?> results;
 	
 	
 	public long getOffSet() {
@@ -35,10 +35,10 @@ public class ListResponse {
 	public void setPageSize(long pageSize) {
 		this.pageSize = pageSize;
 	}
-	public List<Object> getResults() {
+	public List<?> getResults() {
 		return results;
 	}
-	public void setResults(List<Object> results) {
+	public void setResults(List<?> results) {
 		this.results = results;
 	}
 

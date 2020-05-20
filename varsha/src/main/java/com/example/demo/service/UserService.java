@@ -149,9 +149,6 @@ public ListResponse getAllUsers(AllUserRequest request) throws InterruptedExcept
 		Page<Users> userEntityList = null;
 		request.setSortByCol((request.getSortByCol() == null || request.getSortByCol().isEmpty()) ? "firstName" : request.getSortByCol());
 		request.setSortByDirection((request.getSortByDirection() == null || request.getSortByDirection().isEmpty()) ? "ASC" : request.getSortByDirection());
-		
-		System.out.print("page" + request.getPageSize() + "---" + request.getPageNumber() + "---" + request.getSortByCol() + "---" + request.getSortByDirection());
-		
 		PageRequest pageRequest = PageRequest.of(request.getPageNumber(), request.getPageSize(), Sort.by(GeneralUtilities.sortDirection(request.getSortByDirection()), request.getSortByCol()));
 		if (request.getFilterBy() == null) {
 			userEntityList = usersRepository.findAll(pageRequest);

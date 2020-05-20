@@ -13,4 +13,17 @@ public class AppConstant {
 	public static final String UNAUTH_USER = "Unauthorized User.";
 	public static final String USER_NO_PERMISSIONS = "User do not have permissions.";
 	
+	public enum TASK_STATUS {
+		PENDING("pending"), 
+		DONE("done"), 
+		EXPIRED("expired");
+		private String value;
+		public String getValue() {
+			return value;
+		}
+		private TASK_STATUS(String value) {
+			this.value = value;
+		}
+	}  
+	
 }
