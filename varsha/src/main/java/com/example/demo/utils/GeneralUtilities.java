@@ -2,6 +2,8 @@ package com.example.demo.utils;
 
 import java.security.SecureRandom;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,5 +30,9 @@ public class GeneralUtilities {
 		int strength = 10;
 		Boolean status = new BCryptPasswordEncoder(strength, new SecureRandom()).matches(val, encodedPassword);
 		return status;
+	}
+	
+	public static Direction sortDirection(String value) {
+		return   value.equals("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
 	}
 }

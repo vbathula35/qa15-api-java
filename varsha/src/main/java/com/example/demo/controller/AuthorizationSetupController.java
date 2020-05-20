@@ -169,5 +169,24 @@ public class AuthorizationSetupController {
 	}
 	
 	
+	@GetMapping("/getRoleAndFeatureAndPermissions")
+	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
+	public ResponseEntity<Object> getRoleAndFeatureAndPermissions(@CookieValue("user") String user, @RequestParam String roleCode) throws InterruptedException, ExecutionException {
+		if (userService.isValidActiveUser(user)) {
+			if(userService.isSuperAdminUser(user)) {
+				return new ResponseEntity<> (authorizationService.getRoleAndFeatureAndPermission(roleCode), HttpStatus.OK);
+			}
+			errRes.setStatus("002");
+	        errRes.setDescription(AppConstant.USER_NO_PERMISSIONS);
+			return new ResponseEntity<> (errRes, HttpStatus.UNAUTHORIZED);
+		}
+		errRes.setStatus("001");
+        errRes.setDescription(AppConstant.UNAUTH_USER);
+		return new ResponseEntity<> (errRes, HttpStatus.UNAUTHORIZED);
+	}
+	
+	
+	
+	
 	
 }

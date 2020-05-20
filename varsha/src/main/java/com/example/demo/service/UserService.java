@@ -11,6 +11,10 @@ import java.util.stream.Collectors;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,12 +25,17 @@ import com.example.demo.model.UserBo;
 import com.example.demo.model.UserFeatures;
 import com.example.demo.model.UserPermissions;
 import com.example.demo.model.Users;
+import com.example.demo.object.AllUserRequest;
+import com.example.demo.object.ListResponse;
 import com.example.demo.object.PinValidation;
 import com.example.demo.object.Response;
 import com.example.demo.object.User;
 import com.example.demo.object.UserAuthObj;
+import com.example.demo.object.UserFeaturePermissions;
+import com.example.demo.object.UsersList;
 import com.example.demo.repository.UserFeaturesRepository;
 import com.example.demo.repository.UserPermissionsRepository;
+import com.example.demo.repository.UserSpecification;
 import com.example.demo.repository.UsersAuthRepository;
 import com.example.demo.repository.UsersRepository;
 import com.example.demo.utils.GeneralUtilities;
@@ -35,6 +44,12 @@ import com.example.demo.utils.GeneralUtilities;
 public class UserService {
 	
 	Response serviceRes = new Response();
+	
+	@Autowired
+	EmailService emailService;
+	
+	@Autowired
+	AuthorizationService authorizationService;
 	
 	private UsersRepository usersRepository;
 	private UsersAuthRepository usersAuthRepository;
@@ -125,37 +140,69 @@ public class UserService {
 		List<String> permStrinArr = userPermissionList.stream().map(f -> f.getPermissionCode()).collect(Collectors.toList());
 		return permStrinArr;
 	}
+
+
 	
-	public List<UserBo> getAllUsers() throws InterruptedException, ExecutionException {
-		 List<Users> userEntityList = usersRepository.findAll();
-		 List<UserBo> boList = new ArrayList<>();
-		 for (Users entity : userEntityList) {
-			 UserBo bo = new UserBo();
-			 bo.setEmail(entity.getEmail());
-			 bo.setFirstName(entity.getFirstName());
-			 bo.setLastName(entity.getLastName());
-			 bo.setAddressLine1(entity.getAddressLine1());
-			 bo.setAddressLine2(entity.getAddressLine2());
-			 bo.setCity(entity.getCity());
-			 bo.setState(entity.getState());
-			 bo.setZipCode(entity.getZipCode());
-			 bo.setCountry(entity.getCountry());
-			 bo.setPhoneNumber(entity.getPhoneNumber());
-			 bo.setUserRole(entity.getUserRole());
-			 bo.setUserStatus(entity.getUserAuth().getUserStatus());
-			 bo.setfPPin(entity.getUserAuth().getfPPin());
-			 bo.setPin(entity.getUserAuth().getPin());
-			 bo.setRegisterDate(entity.getUserAuth().getRegisterDate());
-			 boList.add(bo);
-		}	 
-		return boList;
+public ListResponse getAllUsers(AllUserRequest request) throws InterruptedException, ExecutionException {
+		
+		ListResponse finalRes = new ListResponse();
+		Page<Users> userEntityList = null;
+		request.setSortByCol((request.getSortByCol() == null || request.getSortByCol().isEmpty()) ? "firstName" : request.getSortByCol());
+		request.setSortByDirection((request.getSortByDirection() == null || request.getSortByDirection().isEmpty()) ? "ASC" : request.getSortByDirection());
+		
+		System.out.print("page" + request.getPageSize() + "---" + request.getPageNumber() + "---" + request.getSortByCol() + "---" + request.getSortByDirection());
+		
+		PageRequest pageRequest = PageRequest.of(request.getPageNumber(), request.getPageSize(), Sort.by(GeneralUtilities.sortDirection(request.getSortByDirection()), request.getSortByCol()));
+		if (request.getFilterBy() == null) {
+			userEntityList = usersRepository.findAll(pageRequest);
+		} else {
+			switch (request.getFilterBy()) {
+				case "firstName":
+					userEntityList = usersRepository.findAll(UserSpecification.findAllUsersByFirstName(request.getFilterValue()) ,pageRequest );
+					break;
+				case "lastName":
+					userEntityList = usersRepository.findAll(UserSpecification.findAllUsersByLastName(request.getFilterValue()) ,pageRequest );
+					break;
+				case "email":
+					userEntityList = usersRepository.findAll(UserSpecification.findAllUsersByEmail(request.getFilterValue()) ,pageRequest );
+					break;
+				case "userRole":
+					userEntityList = usersRepository.findAll(UserSpecification.findAllUsersByUserRole(request.getFilterValue()) ,pageRequest );
+					break;
+				case "userStatus":
+//					userEntityList = usersRepository.findAll(UserSpecification.findAllUsersByUserStatus(request.getFilterValue()) ,pageRequest );
+					break;
+				default:
+					userEntityList = usersRepository.findAll(pageRequest);
+		            break;
+			}
+		}
+		finalRes.setPageNumber(userEntityList.getNumber());
+		finalRes.setPageSize(userEntityList.getSize());
+		finalRes.setTotal(userEntityList.getTotalElements());
+		finalRes.setOffSet(userEntityList.getPageable().getOffset());
+		List<Object> usersList = new ArrayList<>();
+		 for (Users entity : userEntityList.getContent()) {
+			 UsersList usr = new UsersList();
+			 usr.setEmail(entity.getEmail());
+			 usr.setFirstName(entity.getFirstName());
+			 usr.setLastName(entity.getLastName());
+			 usr.setUserRole(entity.getUserRole());
+			 usr.setUserStatus(entity.getUserAuth().getUserStatus());
+			 usersList.add(usr);
+		}	
+		finalRes.setResults(usersList);
+		return finalRes;
 	}
 	
+	
+
+
 	public Users createNewUser(Users user) throws InterruptedException, ExecutionException {
 		return usersRepository.save(user);
 	}
 	
-	public Response registerNewUser(User user) throws InterruptedException, ExecutionException {
+	public ResponseEntity<Response> registerNewUser(User user) throws InterruptedException, ExecutionException {
 		Optional<Users> validateUserEntity = getUserEntity(user.getEmail());
 		if(!validateUserEntity.isPresent()) {
 			String password = GeneralUtilities.valueEncoder(user.getPassword());
@@ -187,18 +234,25 @@ public class UserService {
 				usersRepository.save(newUserEntity);
 				
 				Optional<Users> reValidateUserEntity = getUserEntity(user.getEmail());
-				
 				if (reValidateUserEntity.isPresent() && !reValidateUserEntity.get().getEmail().isEmpty()) {
-					serviceRes.setStatus("000");
-					serviceRes.setDescription("Successfully registered. Please login with your credentials.");
-					return serviceRes;
+					
+					List<String> roleFeatures = authorizationService.getRoleFeaturesStringArr(AppConstant.REG_USER);
+					List<String> rolePermissions = authorizationService.getRolePermissionsStringArr(AppConstant.REG_USER);
+					List<UserFeatures> userFeatures = constrctUserFeatureArray(roleFeatures, reValidateUserEntity.get().getEmail());
+					List<UserPermissions> userPermissions = constructionUserPermissionsArray(rolePermissions, reValidateUserEntity.get().getEmail());
+					
+					userFeaturesRepository.saveAll(userFeatures);
+					userPermissionsRepository.saveAll(userPermissions);
+					
+					String subject = "Varsha pin verification";
+					String message = "Hi, Your verification PIN:"+ number +". Verify your pin to activate Varsha account.";
+							
+					emailService.sendMail(reValidateUserEntity.get().getEmail(), subject, message);
+					return GeneralUtilities.response("000", "User created successfully. Please confirm with pin to activate account.", HttpStatus.OK);
 				}
 			}
 		}
-		
-		serviceRes.setStatus("001");
-		serviceRes.setDescription("Email Id already exist in our records. Please try with different email id.");
-		return serviceRes;
+		return GeneralUtilities.response("001", "Email Id already exist in our records. Please try with different email id.", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	public void deleteUser(String email) throws InterruptedException, ExecutionException {
@@ -232,6 +286,27 @@ public class UserService {
 		return usersAuthRepository.findById(email);
 	}
 	
+	public List<UserFeatures> constrctUserFeatureArray(List<String> features, String email) {
+		List<UserFeatures> userFeaturesArry = new ArrayList<>();
+		features.forEach(feat -> {
+			UserFeatures userFeature = new UserFeatures();
+			userFeature.setEmail(email);
+			userFeature.setFeatureCode(feat);
+			userFeaturesArry.add(userFeature);
+		});
+		return userFeaturesArry;
+	}
+	
+	public List<UserPermissions> constructionUserPermissionsArray(List<String> permissions, String email) {
+		List<UserPermissions> userPermissionsArry = new ArrayList<>();
+		permissions.forEach(perm -> {
+			UserPermissions userPerm= new UserPermissions();
+			userPerm.setEmail(email);
+			userPerm.setPermissionCode(perm);
+			userPermissionsArry.add(userPerm);
+		});
+		return userPermissionsArry;
+	}
 	
 	public ResponseEntity<Response> activateUser(PinValidation value) throws InterruptedException, ExecutionException {
 		Optional<UserAuth> validateUserAuthEntity = getUserAuthEntity(value.getEmail());
@@ -247,19 +322,28 @@ public class UserService {
 		return GeneralUtilities.response("001", "User not found in our records. Please try with valida user.", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-
-
+	public ResponseEntity<Response> updateUserFeaturePermissions(UserFeaturePermissions user) throws InterruptedException, ExecutionException {
+		if (!user.getEmail().isEmpty() && user.getFeatures().size() > 0 && user.getPermissions().size() > 0) {
+			userFeaturesRepository.deleteByEmail(user.getEmail());
+			userPermissionsRepository.deleteByEmail(user.getEmail());
+			List<UserFeatures> userFeatures = constrctUserFeatureArray(user.getFeatures(), user.getEmail());
+			List<UserPermissions> userPermissions = constructionUserPermissionsArray(user.getPermissions(), user.getEmail());			
+			userFeaturesRepository.saveAll(userFeatures);
+			userPermissionsRepository.saveAll(userPermissions);
+			return GeneralUtilities.response("000", "User features and permissions are updated successfully.", HttpStatus.OK);
+		}
+		return GeneralUtilities.response("003", "Please provider required fields and assign atleaset one feature and permission.", HttpStatus.INTERNAL_SERVER_ERROR) ;
+	}
+	
 	public String readCookie(HttpServletRequest request) throws InterruptedException, ExecutionException {
 		Cookie[] cookies = request.getCookies();
 	    if (cookies != null) {
 	        return Arrays.stream(cookies)
 	                .map(c -> c.getName() + "=" + c.getValue()).collect(Collectors.joining(", "));
 	    }
-
 	    return "No cookies";
 	}
 	
 	
 	
-
 }

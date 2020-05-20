@@ -38,7 +38,7 @@ public class UserUnprotectedController {
 	
 	@PostMapping("/register")
 	public ResponseEntity<Response> register(@RequestBody User user) throws InterruptedException, ExecutionException {
-		return new ResponseEntity<Response> (userService.registerNewUser(user), HttpStatus.CREATED);
+		return userService.registerNewUser(user);
 	}
 	
 	@PostMapping("/login")

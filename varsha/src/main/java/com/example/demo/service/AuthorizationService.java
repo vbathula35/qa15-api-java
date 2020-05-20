@@ -2,12 +2,16 @@ package com.example.demo.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.example.demo.model.Features;
 import com.example.demo.model.Permissions;
+import com.example.demo.model.RoleFeaturePermissionRelationship;
+import com.example.demo.model.RoleFeatureRelationship;
 import com.example.demo.model.Roles;
 import com.example.demo.object.Feature;
 import com.example.demo.object.Permission;
@@ -38,6 +42,19 @@ public class AuthorizationService {
 		this.permissionsRepository = permissionsRepository;
 		this.roleFeatureRelationshipRepository = roleFeatureRelationshipRepository;
 		this.roleFeaturePermissionRelationshipRepository = roleFeaturePermissionRelationshipRepository;
+	}
+	
+	
+	public List<String> getRoleFeaturesStringArr(String role) {
+		List<RoleFeatureRelationship> roleFeaturesList = roleFeatureRelationshipRepository.findByRoleCode(role);
+		List<String> featStrinArr = roleFeaturesList.stream().map(f -> f.getFeatureCode()).collect(Collectors.toList());
+		return featStrinArr;
+	}
+	
+	public List<String> getRolePermissionsStringArr(String role) {
+		List<RoleFeaturePermissionRelationship> rolePermissionList = roleFeaturePermissionRelationshipRepository.findByRoleCode(role);
+		List<String> permStrinArr = rolePermissionList.stream().map(f -> f.getPermissionCode()).collect(Collectors.toList());
+		return permStrinArr;
 	}
 	
 	public List<Roles> getAllRoles() throws InterruptedException, ExecutionException {
@@ -166,5 +183,40 @@ public class AuthorizationService {
 			roleFeatList.add(role);
 		}
 		return roleFeatList;
+	}
+	
+	public Role getRoleAndFeatureAndPermission(String RoleCode) throws InterruptedException, ExecutionException {
+		Role role = new Role();
+		Optional<Roles> roleEntityList = rolesRepository.findById(RoleCode);
+		role.setRoleCode(roleEntityList.get().getRoleCode());
+		role.setRoleName(roleEntityList.get().getRoleName());
+		role.setRoleDescription(roleEntityList.get().getRoleDescription());
+		role.setVisibleInd(roleEntityList.get().getVisibleInd());
+		
+		List<Features> featureEntityList = roleFeatureRelationshipRepository.findFeaturesByroleCode(role.getRoleCode());
+		List<Feature> featList = new ArrayList<>();
+		for (Features entity1 : featureEntityList) {
+			Feature feat = new Feature();
+			feat.setFeatureCode(entity1.getFeatureCode());
+			feat.setFeatureName(entity1.getFeatureName());
+			feat.setFeatureDescription(entity1.getFeatureDescription());
+			feat.setVisibleInd(entity1.getVisibleInd());
+			feat.setDefaultInd(entity1.getDefaultInd());
+			List<Permissions> permissionsEntityList = roleFeaturePermissionRelationshipRepository.findPermissionByfeatueAndroleCode(role.getRoleCode(), entity1.getFeatureCode());
+			List<Permission> permList = new ArrayList<>();
+			for (Permissions entity2: permissionsEntityList) {
+				Permission perm = new Permission();
+				perm.setPermissionCode(entity2.getPermissionCode());
+				perm.setPermissionName(entity2.getPermissionName());
+				perm.setPermissionDescription(entity2.getPermissionDescription());
+				perm.setVisibleInd(entity2.getVisibleInd());
+				perm.setDefaultInd(entity2.getDefaultInd());
+				permList.add(perm);
+			}
+			feat.setPermissions(permList);
+			featList.add(feat);
+		}
+		role.setFeatures(featList);
+		return role;
 	}
 }

@@ -150,5 +150,11 @@ public class Users {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
+
+	@Override
+	public String toString() {
+		return "Users [email=" + email + ", firstName=" + firstName + ", lastName=" + lastName + "]";
+	}
+	
 	
 }

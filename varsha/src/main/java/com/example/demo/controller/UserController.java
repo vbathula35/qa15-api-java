@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.constant.AppConstant;
 import com.example.demo.model.Users;
+import com.example.demo.object.AllUserRequest;
 import com.example.demo.object.Response;
 import com.example.demo.service.UserService;
 
@@ -47,42 +48,11 @@ public class UserController {
 		return new ResponseEntity<> (userService.getUser(user), HttpStatus.OK);
 	}
 	
-//	@GetMapping("/getAllUsers")
-//	public ResponseEntity<Object> getAllUsers(@RequestHeader(value = "V-OWNER", required = true) final String loginUserId) throws InterruptedException, ExecutionException {
-//		return new ResponseEntity<> (userService.getAllUsers(), HttpStatus.OK);
-//	}
-	
-	@GetMapping("/getAllUsers")
-	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
-	public ResponseEntity<Object> getAllUsers(@CookieValue("user") String user) throws InterruptedException, ExecutionException {
-		if (userService.isValidActiveUser(user)) {
-			if(userService.isAdminUser(user) || userService.isSuperAdminUser(user)) {
-				return new ResponseEntity<> (userService.getAllUsers(), HttpStatus.OK);
-			}
-			errRes.setStatus("002");
-	        errRes.setDescription(AppConstant.USER_NO_PERMISSIONS);
-			return new ResponseEntity<> (errRes, HttpStatus.UNAUTHORIZED);
-		}
-		errRes.setStatus("001");
-        errRes.setDescription(AppConstant.UNAUTH_USER);
-		return new ResponseEntity<> (errRes, HttpStatus.UNAUTHORIZED);
-	}
-	
-	
-	@PostMapping("/createUser")
-	public ResponseEntity<Object> createUser(@RequestBody Users user, @CookieValue(value = "V-OWNER") final String loginUserId) throws InterruptedException, ExecutionException {
-		return new ResponseEntity<> (userService.createNewUser(user), HttpStatus.CREATED);
-	}
 	
 	@PutMapping("/updateUser")
-	public ResponseEntity<Object> updateUser(@RequestBody Users user, @CookieValue(value = "V-OWNER") final String loginUserId) throws InterruptedException, ExecutionException {
+	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
+	public ResponseEntity<Object> updateUser(@RequestBody Users user, @CookieValue("user") String loggedinUser) throws InterruptedException, ExecutionException {
 		return new ResponseEntity<> (userService.createNewUser(user), HttpStatus.OK);
-	}
-	
-	@DeleteMapping("/deleteUser")
-	public ResponseEntity<?> deleteUser(@RequestBody String email, @CookieValue(value = "V-OWNER") final String loginUserId) throws InterruptedException, ExecutionException {
-		userService.deleteUser(email);
-		return new ResponseEntity<> ("Success", HttpStatus.OK);
 	}
 	
 	@GetMapping("/logout")
