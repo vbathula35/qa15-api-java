@@ -10,17 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.constant.AppConstant;
 import com.example.demo.model.Users;
-import com.example.demo.object.AllUserRequest;
+import com.example.demo.object.ChangePassword;
 import com.example.demo.object.Response;
 import com.example.demo.service.UserService;
 
@@ -49,10 +46,16 @@ public class UserController {
 	}
 	
 	
-	@PutMapping("/updateUser")
+	@PostMapping("/updateUser")
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<Object> updateUser(@RequestBody Users user, @CookieValue("user") String loggedinUser) throws InterruptedException, ExecutionException {
 		return new ResponseEntity<> (userService.createNewUser(user), HttpStatus.OK);
+	}
+	
+	@PostMapping("/changepassword")
+	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
+	public ResponseEntity<Response> changePassword(@RequestBody ChangePassword user, @CookieValue("user") String loggedinUser) throws InterruptedException, ExecutionException {
+		return userService.changePassword(user);
 	}
 	
 	@GetMapping("/logout")

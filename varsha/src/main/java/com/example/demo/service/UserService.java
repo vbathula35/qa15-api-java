@@ -26,6 +26,7 @@ import com.example.demo.model.UserFeatures;
 import com.example.demo.model.UserPermissions;
 import com.example.demo.model.Users;
 import com.example.demo.object.AllUserRequest;
+import com.example.demo.object.ChangePassword;
 import com.example.demo.object.ListResponse;
 import com.example.demo.object.PinValidation;
 import com.example.demo.object.Response;
@@ -355,7 +356,26 @@ public ListResponse getAllUsers(AllUserRequest request) throws InterruptedExcept
 			});
 			return GeneralUtilities.response("000", "User(s) deleted successfully.", HttpStatus.OK);
 		}
-		return GeneralUtilities.response("003", "Please provide atlease one user.", HttpStatus.INTERNAL_SERVER_ERROR) ;
+		return GeneralUtilities.response("003", "Please provide atlease one user.", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	public ResponseEntity<Response> changePassword(ChangePassword user) throws InterruptedException, ExecutionException {
+		Optional<UserAuth> findUsr = usersAuthRepository.findById(user.getEmail());
+		if (findUsr.get().getEmail() != null && !findUsr.get().getEmail().isEmpty()) {
+			if(GeneralUtilities.compareBCryptValue(user.getCurrentPassword(), findUsr.get().getPassword())) {
+				String password = GeneralUtilities.valueEncoder(user.getPassword());
+				UserAuth usrAuth = new UserAuth();
+				usrAuth.setEmail(user.getEmail());
+				usrAuth.setPassword(password);
+				usrAuth.setRegisterDate(findUsr.get().getRegisterDate());
+				usrAuth.setUserStatus(findUsr.get().getUserStatus());
+				usrAuth.setPin(findUsr.get().getPin());
+				usersAuthRepository.save(usrAuth);
+				return GeneralUtilities.response("000", "Your password changed succefully.", HttpStatus.OK);
+			}
+			return GeneralUtilities.response("003", "Your current password does not match with our records. Please enter correct password.", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return GeneralUtilities.response("002", "User not found in our records.", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	
