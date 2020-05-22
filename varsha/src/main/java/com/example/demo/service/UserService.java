@@ -24,6 +24,7 @@ import com.example.demo.model.UserAuth;
 import com.example.demo.model.UserBo;
 import com.example.demo.model.UserFeatures;
 import com.example.demo.model.UserPermissions;
+import com.example.demo.model.UserSubscriptions;
 import com.example.demo.model.Users;
 import com.example.demo.object.AllUserRequest;
 import com.example.demo.object.ChangePassword;
@@ -377,7 +378,6 @@ public ListResponse getAllUsers(AllUserRequest request) throws InterruptedExcept
 		}
 		return GeneralUtilities.response("002", "User not found in our records.", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	
 	
 	public String readCookie(HttpServletRequest request) throws InterruptedException, ExecutionException {
 		Cookie[] cookies = request.getCookies();

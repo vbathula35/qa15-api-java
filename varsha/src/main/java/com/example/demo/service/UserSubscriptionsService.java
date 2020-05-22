@@ -17,7 +17,6 @@ import com.example.demo.object.AllUserRequest;
 import com.example.demo.object.ListResponse;
 import com.example.demo.object.Response;
 import com.example.demo.repository.UserSubscriptionsRepository;
-import com.example.demo.repository.UserSubscriptionsSpecification;
 import com.example.demo.utils.GeneralUtilities;
 
 @Service
@@ -26,6 +25,27 @@ public class UserSubscriptionsService {
 	
 	public UserSubscriptionsService(UserSubscriptionsRepository userSubscriptionsRepository) {
 		this.userSubscriptionsRepository = userSubscriptionsRepository;
+	}
+	
+	public Boolean findSubscriptionEmail(String email) throws InterruptedException, ExecutionException {
+		UserSubscriptions findEmail = userSubscriptionsRepository.findByEmail(email);
+		if (findEmail != null && !findEmail.getEmail().isEmpty() && findEmail.getEmail().equals(email)) {
+			return true;
+		}
+		return false;
+	}
+	
+	
+	
+	public ResponseEntity<Response> newSubscription(UserSubscriptions user) throws InterruptedException, ExecutionException {
+		if (!findSubscriptionEmail(user.getEmail())) {
+			userSubscriptionsRepository.save(user);
+			if (findSubscriptionEmail(user.getEmail())) {
+				return GeneralUtilities.response("000", "Email successfully subscribed.", HttpStatus.OK);
+			}
+			return GeneralUtilities.response("002", "Unable to subscribe at this time. Please try after sometime.", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return GeneralUtilities.response("001", "The email provided is already subscribed. Please try with other email.", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	public ListResponse getAllSubscriptions(AllUserRequest request) throws InterruptedException, ExecutionException {
