@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.Cookie;
@@ -20,11 +21,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.constant.AppConstant;
+import com.example.demo.model.Email;
 import com.example.demo.model.UserAuth;
 import com.example.demo.model.UserBo;
 import com.example.demo.model.UserFeatures;
 import com.example.demo.model.UserPermissions;
-import com.example.demo.model.UserSubscriptions;
 import com.example.demo.model.Users;
 import com.example.demo.object.AllUserRequest;
 import com.example.demo.object.ChangePassword;
@@ -145,7 +146,7 @@ public class UserService {
 
 
 	
-public ListResponse getAllUsers(AllUserRequest request) throws InterruptedException, ExecutionException {
+	public ListResponse getAllUsers(AllUserRequest request) throws InterruptedException, ExecutionException {
 		
 		ListResponse finalRes = new ListResponse();
 		Page<Users> userEntityList = null;
@@ -377,6 +378,38 @@ public ListResponse getAllUsers(AllUserRequest request) throws InterruptedExcept
 			return GeneralUtilities.response("003", "Your current password does not match with our records. Please enter correct password.", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return GeneralUtilities.response("002", "User not found in our records.", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	public ResponseEntity<Response> forgotPassword(Email email) throws InterruptedException, ExecutionException {
+		UserAuth userVal = usersAuthRepository.findById(email.getEmail()).orElse(new UserAuth());
+		if (userVal.getEmail() != null && !userVal.getEmail().isEmpty()) {
+			long fpPin = (long) Math.floor(Math.random() * 9_000_000_000L) + 1_000_000_000L;
+			userVal.setfPPin(fpPin);
+			userVal.setUserStatus(AppConstant.RESET_PASSWORD);
+			usersAuthRepository.save(userVal);
+			String subject = "Varsha pin verification";
+			String message = "Hi, Your verification PIN:"+ fpPin +". Verify your pin to reset your password.";
+			emailService.sendMail(userVal.getEmail(), subject, message);
+			return GeneralUtilities.response("000", "Verification pin sent to your email. Please verify your pin.", HttpStatus.OK);
+		}
+		return GeneralUtilities.response("001", "Not a valid user. Please try with valid user.", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	public ResponseEntity<Response> resetPassword(UserAuth user) throws InterruptedException, ExecutionException {
+		UserAuth userVal = usersAuthRepository.findById(user.getEmail()).orElse(new UserAuth());
+		if (userVal.getEmail() != null && !userVal.getEmail().isEmpty()) {
+			if (userVal.getfPPin().equals(user.getfPPin())) {
+				userVal.setUserStatus(AppConstant.ACTIVE_USER);
+				userVal.setPassword(GeneralUtilities.valueEncoder(user.getPassword()));
+				usersAuthRepository.save(userVal);
+				String subject = "Varsha pin verification";
+				String message = "Hi, Your successfully verified your pin. Your password updated successfully.";
+				emailService.sendMail(userVal.getEmail(), subject, message);
+				return GeneralUtilities.response("000", "Verification pin sent to your email. Please verify your pin.", HttpStatus.OK);
+			}
+			return GeneralUtilities.response("002", "Provided pin is not matching with our records. Please try with valid pin.", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return GeneralUtilities.response("001", "Not a valid user. Please try with valid user.", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	public String readCookie(HttpServletRequest request) throws InterruptedException, ExecutionException {

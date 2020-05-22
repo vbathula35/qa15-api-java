@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.constant.AppConstant;
+import com.example.demo.model.Email;
+import com.example.demo.model.UserAuth;
 import com.example.demo.model.UserSubscriptions;
 import com.example.demo.object.PinValidation;
 import com.example.demo.object.Response;
@@ -52,6 +54,16 @@ public class UserUnprotectedController {
 	@PostMapping("/activate")
 	public ResponseEntity<?> activate(@RequestBody PinValidation userPin) throws InterruptedException, ExecutionException {
 		return userService.activateUser(userPin);
+	}
+	
+	@PostMapping("/forgotPassword")
+	public ResponseEntity<Response> forgotPassword(@RequestBody Email user) throws InterruptedException, ExecutionException {
+		return userService.forgotPassword(user);
+	}
+	
+	@PostMapping("/resetPassword")
+	public ResponseEntity<Response> resetPassword(@RequestBody UserAuth user) throws InterruptedException, ExecutionException {
+		return userService.resetPassword(user);
 	}
 	
 	@PostMapping("/register")
