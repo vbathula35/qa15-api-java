@@ -12,7 +12,10 @@ public interface RoleFeaturePermissionRelationshipRepository extends JpaReposito
 	@Query List<RoleFeaturePermissionRelationship> findByRoleCode(String roleCode);
 	@Query List<RoleFeaturePermissionRelationship> findByFeatureCode(String featureCode);
 	@Query List<RoleFeaturePermissionRelationship> findByPermissionCode(String permissionCode);
-	@Query("SELECT p FROM RoleFeaturePermissionRelationship rfp JOIN Permissions p ON rfp.permissionCode = p.permissionCode WHERE rfp.roleCode = :roleCode AND rfp.featureCode = :featureCode")
-//	@Query("SELECT f FROM RoleFeaturePermissionRelationship rfp INNER JOIN Permissions f ON rf.featureCode = f.featureCode WHERE rf.roleCode = :roleCode")
-	public List<Permissions> findPermissionByfeatueAndroleCode(String roleCode, String featureCode);
+	
+	@Query ("SELECT rfp FROM RoleFeaturePermissionRelationship rfp WHERE rfp.roleCode = :roleCode AND rfp.featureCode = :featureCode")
+	public List<RoleFeaturePermissionRelationship> findPermissionByRoleAndFeature(String roleCode, String featureCode);
+	
+//	@Query("SELECT p FROM RoleFeaturePermissionRelationship rfp JOIN Permissions p ON rfp.permissionCode = p.permissionCode WHERE rfp.roleCode = :roleCode AND rfp.featureCode = :featureCode")
+//	public List<RoleFeaturePermissionRelationship> findPermissionByfeatueAndroleCode(String roleCode, String featureCode);
 }

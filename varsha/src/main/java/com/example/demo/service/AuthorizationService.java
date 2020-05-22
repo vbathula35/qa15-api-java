@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -80,7 +79,6 @@ public class AuthorizationService {
 			 feat.setFeatureName(entity.getFeatureName());
 			 feat.setFeatureDescription(entity.getFeatureDescription());
 			 feat.setVisibleInd(entity.getVisibleInd());
-			 feat.setDefaultInd(entity.getDefaultInd());
 			 featList.add(feat);
 		}	 
 		return featList;
@@ -95,7 +93,6 @@ public class AuthorizationService {
 			 perm.setPermissionName(entity.getPermissionName());
 			 perm.setPermissionDescription(entity.getPermissionDescription());
 			 perm.setVisibleInd(entity.getVisibleInd());
-			 perm.setDefaultInd(entity.getDefaultInd());
 			 permList.add(perm);
 		}	 
 		return permList;
@@ -124,7 +121,6 @@ public class AuthorizationService {
 			 feat.setFeatureName(entity.getFeatureName());
 			 feat.setFeatureDescription(entity.getFeatureDescription());
 			 feat.setVisibleInd(entity.getVisibleInd());
-			 feat.setDefaultInd(entity.getDefaultInd());
 			 featList.add(feat);
 		}	 
 		return featList;
@@ -139,7 +135,6 @@ public class AuthorizationService {
 			 perm.setPermissionName(entity.getPermissionName());
 			 perm.setPermissionDescription(entity.getPermissionDescription());
 			 perm.setVisibleInd(entity.getVisibleInd());
-			 perm.setDefaultInd(entity.getDefaultInd());
 			 permList.add(perm);
 		}	 
 		return permList;
@@ -156,28 +151,28 @@ public class AuthorizationService {
 			role.setRoleName(entity.getRoleName());
 			role.setRoleDescription(entity.getRoleDescription());
 			role.setVisibleInd(entity.getVisibleInd());
-			List<Features> featureEntityList = roleFeatureRelationshipRepository.findFeaturesByroleCode(entity.getRoleCode());
+			List<RoleFeatureRelationship> featureEntityList = roleFeatureRelationshipRepository.findByRoleCode(entity.getRoleCode());
 			List<Feature> featList = new ArrayList<>();
-			for (Features entity1 : featureEntityList) {
-				Feature feat = new Feature();
-				feat.setFeatureCode(entity1.getFeatureCode());
-				feat.setFeatureName(entity1.getFeatureName());
-				feat.setFeatureDescription(entity1.getFeatureDescription());
-				feat.setVisibleInd(entity1.getVisibleInd());
-				feat.setDefaultInd(entity1.getDefaultInd());
-				List<Permissions> permissionsEntityList = roleFeaturePermissionRelationshipRepository.findPermissionByfeatueAndroleCode(entity.getRoleCode(), entity1.getFeatureCode());
+			for (RoleFeatureRelationship entity1 : featureEntityList) {
+				Feature feature = new Feature();
+				Features feat = featuresRepository.findById(entity1.getFeatureCode()).orElse(new Features());
+				feature.setFeatureCode(feat.getFeatureCode());
+				feature.setFeatureName(feat.getFeatureName());
+				feature.setFeatureDescription(feat.getFeatureDescription());
+				feature.setVisibleInd(entity.getVisibleInd() && feat.getVisibleInd() && entity1.isVisibleInd());
+				List<RoleFeaturePermissionRelationship> permissionsEntityList = roleFeaturePermissionRelationshipRepository.findPermissionByRoleAndFeature(entity.getRoleCode(), entity1.getFeatureCode());
 				List<Permission> permList = new ArrayList<>();
-				for (Permissions entity2: permissionsEntityList) {
-					Permission perm = new Permission();
-					perm.setPermissionCode(entity2.getPermissionCode());
-					perm.setPermissionName(entity2.getPermissionName());
-					perm.setPermissionDescription(entity2.getPermissionDescription());
-					perm.setVisibleInd(entity2.getVisibleInd());
-					perm.setDefaultInd(entity2.getDefaultInd());
-					permList.add(perm);
+				for (RoleFeaturePermissionRelationship entity2: permissionsEntityList) {
+					Permission permission = new Permission();
+					Permissions perm = permissionsRepository.findById(entity2.getPermissionCode()).orElse(new Permissions());
+					permission.setPermissionCode(perm.getPermissionCode());
+					permission.setPermissionName(perm.getPermissionName());
+					permission.setPermissionDescription(perm.getPermissionDescription());
+					permission.setVisibleInd(perm.getVisibleInd() && entity1.isVisibleInd() && entity2.getVisibleInd() && entity.getVisibleInd());
+					permList.add(permission);
 				}
-				feat.setPermissions(permList);
-				featList.add(feat);
+				feature.setPermissions(permList);
+				featList.add(feature);
 			}
 			role.setFeatures(featList);
 			roleFeatList.add(role);
@@ -187,34 +182,34 @@ public class AuthorizationService {
 	
 	public Role getRoleAndFeatureAndPermission(String RoleCode) throws InterruptedException, ExecutionException {
 		Role role = new Role();
-		Optional<Roles> roleEntityList = rolesRepository.findById(RoleCode);
-		role.setRoleCode(roleEntityList.get().getRoleCode());
-		role.setRoleName(roleEntityList.get().getRoleName());
-		role.setRoleDescription(roleEntityList.get().getRoleDescription());
-		role.setVisibleInd(roleEntityList.get().getVisibleInd());
+		Roles roleEntityList = rolesRepository.findById(RoleCode).orElse((new Roles()));
+		role.setRoleCode(roleEntityList.getRoleCode());
+		role.setRoleName(roleEntityList.getRoleName());
+		role.setRoleDescription(roleEntityList.getRoleDescription());
+		role.setVisibleInd(roleEntityList.getVisibleInd());
 		
-		List<Features> featureEntityList = roleFeatureRelationshipRepository.findFeaturesByroleCode(role.getRoleCode());
+		List<RoleFeatureRelationship> featureEntityList = roleFeatureRelationshipRepository.findByRoleCode(role.getRoleCode());
 		List<Feature> featList = new ArrayList<>();
-		for (Features entity1 : featureEntityList) {
-			Feature feat = new Feature();
-			feat.setFeatureCode(entity1.getFeatureCode());
-			feat.setFeatureName(entity1.getFeatureName());
-			feat.setFeatureDescription(entity1.getFeatureDescription());
-			feat.setVisibleInd(entity1.getVisibleInd());
-			feat.setDefaultInd(entity1.getDefaultInd());
-			List<Permissions> permissionsEntityList = roleFeaturePermissionRelationshipRepository.findPermissionByfeatueAndroleCode(role.getRoleCode(), entity1.getFeatureCode());
+		for (RoleFeatureRelationship entity1 : featureEntityList) {
+			Feature feature = new Feature();
+			Features feat = featuresRepository.findById(entity1.getFeatureCode()).orElse(new Features());
+			feature.setFeatureCode(feat.getFeatureCode());
+			feature.setFeatureName(feat.getFeatureName());
+			feature.setFeatureDescription(feat.getFeatureDescription());
+			feature.setVisibleInd(roleEntityList.getVisibleInd() && feat.getVisibleInd() && entity1.isVisibleInd());
+			List<RoleFeaturePermissionRelationship> permissionsEntityList = roleFeaturePermissionRelationshipRepository.findPermissionByRoleAndFeature(role.getRoleCode(), entity1.getFeatureCode());
 			List<Permission> permList = new ArrayList<>();
-			for (Permissions entity2: permissionsEntityList) {
-				Permission perm = new Permission();
-				perm.setPermissionCode(entity2.getPermissionCode());
-				perm.setPermissionName(entity2.getPermissionName());
-				perm.setPermissionDescription(entity2.getPermissionDescription());
-				perm.setVisibleInd(entity2.getVisibleInd());
-				perm.setDefaultInd(entity2.getDefaultInd());
-				permList.add(perm);
+			for (RoleFeaturePermissionRelationship entity2: permissionsEntityList) {
+				Permission permission = new Permission();
+				Permissions perm = permissionsRepository.findById(entity2.getPermissionCode()).orElse(new Permissions());
+				permission.setPermissionCode(perm.getPermissionCode());
+				permission.setPermissionName(perm.getPermissionName());
+				permission.setPermissionDescription(perm.getPermissionDescription());
+				permission.setVisibleInd(perm.getVisibleInd() && entity1.isVisibleInd() && entity2.getVisibleInd() && roleEntityList.getVisibleInd());
+				permList.add(permission);
 			}
-			feat.setPermissions(permList);
-			featList.add(feat);
+			feature.setPermissions(permList);
+			featList.add(feature);
 		}
 		role.setFeatures(featList);
 		return role;

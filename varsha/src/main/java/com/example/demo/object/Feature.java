@@ -7,7 +7,6 @@ public class Feature {
 	private String featureName;
 	private String featureDescription;
 	private boolean visibleInd;
-	private boolean defaultInd;
 	private List<Permission> permissions;
 	
 	public String getFeatureCode() {
@@ -33,12 +32,6 @@ public class Feature {
 	}
 	public void setVisibleInd(boolean visibleInd) {
 		this.visibleInd = visibleInd;
-	}
-	public boolean isDefaultInd() {
-		return defaultInd;
-	}
-	public void setDefaultInd(boolean defaultInd) {
-		this.defaultInd = defaultInd;
 	}
 	public List<Permission> getPermissions() {
 		return permissions;

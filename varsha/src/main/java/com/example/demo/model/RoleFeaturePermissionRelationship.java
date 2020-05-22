@@ -18,7 +18,7 @@ public class RoleFeaturePermissionRelationship {
 	@Column(name = "permissionCode")
 	private String permissionCode;
 	@Column(name = "visibleInd")
-	private String visibleInd;
+	private boolean visibleInd;
 	
 	public String getRelatiohshipCode() {
 		return relatiohshipCode;
@@ -44,10 +44,10 @@ public class RoleFeaturePermissionRelationship {
 	public void setPermissionCode(String permissionCode) {
 		this.permissionCode = permissionCode;
 	}
-	public String getVisibleInd() {
+	public boolean getVisibleInd() {
 		return visibleInd;
 	}
-	public void setVisibleInd(String visibleInd) {
+	public void setVisibleInd(boolean visibleInd) {
 		this.visibleInd = visibleInd;
 	}
 	

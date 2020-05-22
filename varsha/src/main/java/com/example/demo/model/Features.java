@@ -17,8 +17,6 @@ public class Features {
 	private String featureDescription;
 	@Column(name = "visibleInd")
 	private boolean visibleInd;
-	@Column(name = "defaultInd")
-	private boolean defaultInd;
 	
 	public String getFeatureCode() {
 		return featureCode;
@@ -44,11 +42,4 @@ public class Features {
 	public void setVisibleInd(boolean visibleInd) {
 		this.visibleInd = visibleInd;
 	}
-	public boolean getDefaultInd() {
-		return defaultInd;
-	}
-	public void setDefaultInd(boolean defaultInd) {
-		this.defaultInd = defaultInd;
-	}
-	
 }

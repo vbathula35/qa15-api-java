@@ -17,8 +17,7 @@ public class Permissions {
 	private String permissionDescription;
 	@Column(name = "visibleInd")
 	private boolean visibleInd;
-	@Column(name = "defaultInd")
-	private boolean defaultInd;
+	
 	public String getPermissionCode() {
 		return permissionCode;
 	}
@@ -43,12 +42,5 @@ public class Permissions {
 	public void setVisibleInd(boolean visibleInd) {
 		this.visibleInd = visibleInd;
 	}
-	public boolean getDefaultInd() {
-		return defaultInd;
-	}
-	public void setDefaultInd(boolean defaultInd) {
-		this.defaultInd = defaultInd;
-	}
-	
 	
 }

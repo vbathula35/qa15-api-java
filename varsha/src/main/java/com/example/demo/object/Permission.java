@@ -5,7 +5,6 @@ public class Permission {
 	private String permissionName;
 	private String permissionDescription;
 	private boolean visibleInd;
-	private boolean defaultInd;
 	
 	public String getPermissionCode() {
 		return permissionCode;
@@ -31,12 +30,5 @@ public class Permission {
 	public void setVisibleInd(boolean visibleInd) {
 		this.visibleInd = visibleInd;
 	}
-	public boolean isDefaultInd() {
-		return defaultInd;
-	}
-	public void setDefaultInd(boolean defaultInd) {
-		this.defaultInd = defaultInd;
-	}
-	
-	
+
 }

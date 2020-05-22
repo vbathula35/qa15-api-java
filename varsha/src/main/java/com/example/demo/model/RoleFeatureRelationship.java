@@ -15,6 +15,9 @@ public class RoleFeatureRelationship {
 	private String roleCode;
 	@Column(name = "featureCode")
 	private String featureCode;
+	@Column(name = "visibleInd")
+	private boolean visibleInd;
+	
 	
 	
 	public String getRelatiohshipCode() {
@@ -34,6 +37,12 @@ public class RoleFeatureRelationship {
 	}
 	public void setFeatureCode(String featureCode) {
 		this.featureCode = featureCode;
+	}
+	public boolean isVisibleInd() {
+		return visibleInd;
+	}
+	public void setVisibleInd(boolean visibleInd) {
+		this.visibleInd = visibleInd;
 	}
 	
 	

@@ -15,6 +15,8 @@ public class FeaturePermissionRelationship {
 	private String featureCode;
 	@Column(name = "permissionCode")
 	private String permissionCode;
+	@Column(name = "visibleInd")
+	private boolean visibleInd;
 	
 	public String getRelatiohshipCode() {
 		return relatiohshipCode;
@@ -33,6 +35,12 @@ public class FeaturePermissionRelationship {
 	}
 	public void setPermissionCode(String permissionCode) {
 		this.permissionCode = permissionCode;
+	}
+	public boolean isVisibleInd() {
+		return visibleInd;
+	}
+	public void setVisibleInd(boolean visibleInd) {
+		this.visibleInd = visibleInd;
 	}
 	
 	
