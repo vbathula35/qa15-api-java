@@ -75,34 +75,22 @@ public class UserService {
 	
 	public Boolean isValidActiveUser(String user) throws InterruptedException, ExecutionException {
 		UserBo userbo = getUser(user);
-		if (userbo.getEmail() != null && userbo.getUserStatus().equals(AppConstant.ACTIVE_USER)) {
-			return true;
-		}
-		return false;
+		return (userbo.getEmail() != null && userbo.getUserStatus().equals(AppConstant.ACTIVE_USER)) ? true : false;
 	}
 	
 	public Boolean isSuperAdminUser(String user) throws InterruptedException, ExecutionException {
 		UserBo userbo = getUser(user);
-		if (userbo.getUserRole().equals(AppConstant.SUPER_ADMIN)) {
-			return true;
-		}
-		return false;
+		return userbo.getUserRole().equals(AppConstant.SUPER_ADMIN) ? true : false;
 	}
 	
 	public Boolean isAdminUser(String user) throws InterruptedException, ExecutionException {
 		UserBo userbo = getUser(user);
-		if (userbo.getUserRole().equals(AppConstant.ADMIN)) {
-			return true;
-		}
-		return false;
+		return userbo.getUserRole().equals(AppConstant.ADMIN) ? true : false;
 	}
 	
 	public Boolean isRegUser(String user) throws InterruptedException, ExecutionException {
 		UserBo userbo = getUser(user);
-		if (userbo.getUserRole().equals(AppConstant.REG_USER)) {
-			return true;
-		}
-		return false;
+		return userbo.getUserRole().equals(AppConstant.REG_USER) ? true : false;
 	}
 	
 	public UserBo getUser(String user) throws InterruptedException, ExecutionException {
@@ -256,7 +244,6 @@ public class UserService {
 	}	
 	
 	public Object authenticate(String email, String password) throws InterruptedException, ExecutionException {
-		
 		Optional<UserAuth> validateUserAuthEntity = getUserAuthEntity(email);
 		if (validateUserAuthEntity.isPresent()) {
 			if (GeneralUtilities.compareBCryptValue(password, validateUserAuthEntity.get().getPassword())) {
