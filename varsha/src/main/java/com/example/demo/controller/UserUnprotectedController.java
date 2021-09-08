@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.Cookie;
@@ -14,11 +15,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.model.Users;
+import com.example.demo.constant.AppConstant;
+import com.example.demo.model.Email;
+import com.example.demo.model.UserAuth;
+import com.example.demo.model.UserSubscriptions;
+import com.example.demo.object.PinValidation;
 import com.example.demo.object.Response;
+import com.example.demo.object.User;
 import com.example.demo.object.UserAuthObj;
 import com.example.demo.object.UserCredentials;
 import com.example.demo.service.UserService;
+import com.example.demo.service.UserSubscriptionsService;
+import com.example.demo.utils.GeneralUtilities;
 
 import io.swagger.annotations.Api;
 
@@ -28,10 +36,39 @@ import io.swagger.annotations.Api;
 public class UserUnprotectedController {
 	@Autowired
 	UserService userService;
+	@Autowired
+	UserSubscriptionsService userSubscriptionsService;
+	
+	@PostMapping("/subscribe")
+	public ResponseEntity<Response> subscribe(@RequestBody UserSubscriptions data) throws InterruptedException, ExecutionException {
+		if (!userSubscriptionsService.findSubscriptionEmail(data.getEmail())) {
+			UserSubscriptions user = new UserSubscriptions();
+			user.setEmail(data.getEmail());
+			user.setSubscriptionDate(new Date());
+			user.setStatus(AppConstant.ACTIVE_USER);
+			return userSubscriptionsService.newSubscription(user);
+		}
+		return GeneralUtilities.response("001", "The email provided is already subscribed. Please try with other email.", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@PostMapping("/activate")
+	public ResponseEntity<?> activate(@RequestBody PinValidation userPin) throws InterruptedException, ExecutionException {
+		return userService.activateUser(userPin);
+	}
+	
+	@PostMapping("/forgotPassword")
+	public ResponseEntity<Response> forgotPassword(@RequestBody Email user) throws InterruptedException, ExecutionException {
+		return userService.forgotPassword(user);
+	}
+	
+	@PostMapping("/resetPassword")
+	public ResponseEntity<Response> resetPassword(@RequestBody UserAuth user) throws InterruptedException, ExecutionException {
+		return userService.resetPassword(user);
+	}
 	
 	@PostMapping("/register")
-	public ResponseEntity<Object> register(@RequestBody Users user) throws InterruptedException, ExecutionException {
-		return new ResponseEntity<> (userService.registerNewUser(user), HttpStatus.CREATED);
+	public ResponseEntity<Response> register(@RequestBody User user) throws InterruptedException, ExecutionException {
+		return userService.registerNewUser(user);
 	}
 	
 	@PostMapping("/login")
@@ -40,22 +77,22 @@ public class UserUnprotectedController {
 		if (resp != null) {
 			UserAuthObj response = new UserAuthObj();
 			response = (UserAuthObj) resp;
-			if (response.getUserStatus().equals("active")) {
+			if (response.getUserStatus().equals(AppConstant.ACTIVE_USER)) {
 				HttpHeaders headers = new HttpHeaders();
-		        headers.add("Set-Cookie","V-OWNER="+ response.getEmail());
+				headers.set("V-OWNER", response.getEmail());
 		        headers.setExpires(8 * 60 * 60);
-		        ResponseEntity.status(HttpStatus.OK).headers(headers).build();				
+		       
+		        
 		        Cookie cookie = new Cookie("user", response.getEmail());
 				cookie.setMaxAge(8 * 60 * 60);
+				cookie.setPath("/");
 				servletResponse.addCookie(cookie);
-				return new ResponseEntity<>(response,headers,HttpStatus.OK);
+				
+				return ResponseEntity.ok().headers(headers).body(response);
 			} else {
-				return new ResponseEntity<> (response, HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity<> (response, HttpStatus.OK);
 			}
 		};
-		Response res = new Response();
-		res.setStatus("001");
-		res.setDescription("Invalid credentials. Please try with valid credentials.");
-		return new ResponseEntity<> (res,  HttpStatus.INTERNAL_SERVER_ERROR); 
+		return GeneralUtilities.response("001", "Invalid credentials. Please try with valid credentials.", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

@@ -1,26 +1,43 @@
 package com.example.demo.model;
 
 import java.util.Date;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class UserBo {
 
 	private String firstName;
 	private String lastName;
+	@JsonInclude(JsonInclude.Include.NON_NULL) 
 	private String userRole;
 	private String addressLine1;
+	@JsonInclude(JsonInclude.Include.NON_NULL) 
 	private String addressLine2;
 	private String city;
 	private String state;
+	@JsonInclude(JsonInclude.Include.NON_NULL) 
 	private String country;
 	private Integer zipCode;
 	private String phoneNumber;
 
 	private String email;
+	@JsonInclude(JsonInclude.Include.NON_NULL) 
 	private Date registerDate;
-	private Integer pin;
-	private Integer fPPin;
+	@JsonInclude(JsonInclude.Include.NON_NULL) 
+	private Long pin;
+	@JsonInclude(JsonInclude.Include.NON_NULL) 
+	private Long fPPin;
+	@JsonInclude(JsonInclude.Include.NON_NULL) 
 	private String userStatus;
+	
+	@JsonInclude(JsonInclude.Include.NON_NULL) 
+	private List<String> userFeatures;
+	@JsonInclude(JsonInclude.Include.NON_NULL) 
+	private List<String> userPermissions;
 
+
+	
 
 	public String getFirstName() {
 		return firstName;
@@ -118,19 +135,19 @@ public class UserBo {
 		this.registerDate = registerDate;
 	}
 
-	public Integer getPin() {
+	public Long getPin() {
 		return pin;
 	}
 
-	public void setPin(Integer pin) {
+	public void setPin(Long pin) {
 		this.pin = pin;
 	}
 
-	public Integer getfPPin() {
+	public Long getfPPin() {
 		return fPPin;
 	}
 
-	public void setfPPin(Integer fPPin) {
+	public void setfPPin(Long fPPin) {
 		this.fPPin = fPPin;
 	}
 
@@ -141,5 +158,22 @@ public class UserBo {
 	public void setUserStatus(String userStatus) {
 		this.userStatus = userStatus;
 	}
+	
+	public List<String> getUserFeatures() {
+		return userFeatures;
+	}
+
+	public void setUserFeatures(List<String> list) {
+		this.userFeatures = list;
+	}
+
+	public List<String> getUserPermissions() {
+		return userPermissions;
+	}
+
+	public void setUserPermissions(List<String> userPermissions) {
+		this.userPermissions = userPermissions;
+	}
+
 
 }

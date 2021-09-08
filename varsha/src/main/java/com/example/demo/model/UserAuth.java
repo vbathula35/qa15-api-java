@@ -7,21 +7,32 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 @Entity
 @Table(name = "varsha_user_auth")
 public class UserAuth {
 	@Id
-	@Column(name = "email", nullable = true)
+	@Column(name = "email")
 	private String email;
-	@Column(name = "password", nullable = true)
+	
+	@Column(name = "password")
 	private String password;
-	@Column(name = "registerDate", nullable = true)
+	
+	@Column(name = "registerDate")
+	@JsonInclude(JsonInclude.Include.NON_NULL) 
 	private Date registerDate;
-	@Column(name = "pin", nullable = true)
-	private Integer pin;
-	@Column(name = "fPPin", nullable = true)
-	private Integer fPPin;
-	@Column(name = "userStatus", nullable = true)
+	
+	@Column(name = "pin")
+	@JsonInclude(JsonInclude.Include.NON_NULL) 
+	private Long pin;
+	
+	@Column(name = "fPPin")
+	@JsonInclude(JsonInclude.Include.NON_NULL) 
+	private Long fPPin;
+	
+	@Column(name = "userStatus")
+	@JsonInclude(JsonInclude.Include.NON_NULL) 
 	private String userStatus;
 	
 	
@@ -47,16 +58,16 @@ public class UserAuth {
 	public void setRegisterDate(Date registerDate) {
 		this.registerDate = registerDate;
 	}
-	public Integer getPin() {
+	public long getPin() {
 		return pin;
 	}
-	public void setPin(Integer pin) {
+	public void setPin(Long pin) {
 		this.pin = pin;
 	}
-	public Integer getfPPin() {
+	public Long getfPPin() {
 		return fPPin;
 	}
-	public void setfPPin(Integer fPPin) {
+	public void setfPPin(Long fPPin) {
 		this.fPPin = fPPin;
 	}
 	public String getUserStatus() {
