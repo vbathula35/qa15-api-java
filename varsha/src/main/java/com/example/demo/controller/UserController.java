@@ -43,7 +43,7 @@ public class UserController {
 	}
 	
 	@GetMapping("/getAllUsers")
-	public ResponseEntity<Object> getAllUsers(@CookieValue(value = "V-OWNER", defaultValue = "unknown") final String loginUserId) throws InterruptedException, ExecutionException {
+	public ResponseEntity<Object> getAllUsers(@RequestHeader(name = "V-OWNER", required = true) String loginUserId) throws InterruptedException, ExecutionException {
 		return new ResponseEntity<> (userService.getAllUsers(), HttpStatus.OK);
 	}
 	
