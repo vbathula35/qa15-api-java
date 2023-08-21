@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.Users;
+import com.example.demo.object.AllUserRequest;
 import com.example.demo.object.ChangePassword;
 import com.example.demo.object.Response;
 import com.example.demo.service.UserService;
@@ -47,8 +49,8 @@ public class UserController {
 	
 
 	@GetMapping("/getAllUsers")
-	public ResponseEntity<Object> getAllUsers(@RequestHeader(name = "V-OWNER", required = true) String loginUserId) throws InterruptedException, ExecutionException {
-		return new ResponseEntity<> (userService.getAllUsers(), HttpStatus.OK);
+	public ResponseEntity<Object> getAllUsers(@RequestBody AllUserRequest allUserRequest, @CookieValue(value = "V-OWNER") String loginUserId) throws InterruptedException, ExecutionException {
+		return new ResponseEntity<> (userService.getAllUsers(allUserRequest), HttpStatus.OK);
 	}
 	
 	
