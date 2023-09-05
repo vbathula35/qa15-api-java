@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.constant.AppConstant;
-import com.example.demo.object.UserProjectRequest;
-import com.example.demo.service.UserProjectService;
+import com.example.demo.object.AllUserRequest;
+import com.example.demo.object.TimesheetRequest;
+import com.example.demo.service.ProjectService;
 import com.example.demo.service.UserService;
 import com.example.demo.utils.GeneralUtilities;
 
@@ -21,27 +22,25 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 
-
-
 @RestController
-@RequestMapping("/api/user/projects")
+@RequestMapping("/api/user/project")
 @Api(tags = "User Project Protected Service", value = "User Project Api", description = "All User Project Protected Services are here")
-public class UserProjectController {
-	
-	
+public class ProjectController {
 	
 	@Autowired
-	UserProjectService userProjectService;
+	ProjectService projectService;
 	
 	@Autowired
 	UserService userService;
 	
-	@PostMapping("/createproject")
+	
+	@PostMapping("/list")
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
-	public ResponseEntity<?> createProject(@CookieValue("user") String user, @RequestBody UserProjectRequest request) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> list(@CookieValue("user") String user, @RequestBody AllUserRequest request) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			return userProjectService.createNewProject(user, request);
+			return new ResponseEntity<> (projectService.getProject(user, userService.isAdminUser(user) || userService.isSuperAdminUser(user), request), HttpStatus.OK);
 		}
 		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
+	
 	}
 }
