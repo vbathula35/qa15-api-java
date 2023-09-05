@@ -1,11 +1,23 @@
 package com.example.demo.controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.constant.AppConstant;
 import com.example.demo.model.Users;
@@ -107,6 +120,38 @@ public class AdminUser {
 		if (userService.isValidActiveUser(user)) {
 			if(userService.isAdminUser(user) || userService.isSuperAdminUser(user)) {
 				return userService.deleteUser(users);
+			}
+			return GeneralUtilities.response("002", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
+		}
+		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
+	}
+	
+	@PostMapping("/upload")
+	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
+	public ResponseEntity<?> UploadUsers(@CookieValue("user") String user, @RequestParam("file") MultipartFile file) throws InterruptedException, ExecutionException, IOException {
+		if (userService.isValidActiveUser(user)) {
+			if(userService.isAdminUser(user) || userService.isSuperAdminUser(user)) {
+				String type = file.getOriginalFilename().split("\\.")[1];
+		        InputStream inputStream = file.getInputStream();
+		        try {
+		        	if (type == "txtFile") {
+		        		byte[] bdata = FileCopyUtils.copyToByteArray(inputStream);
+			            String data = new String(bdata, StandardCharsets.UTF_8);
+			            List<String> json = Stream.of(data.split(";", -1))
+			            		  .collect(Collectors.toList());
+			            System.out.print("File Type" + type);
+			            return new ResponseEntity<> (json, HttpStatus.OK);
+		        	} else if (type == "xlsx") {
+		        		
+		        	} else {
+		        		return GeneralUtilities.response("003", "File Not Supported", HttpStatus.BAD_REQUEST);
+		        	}
+		            
+		        } catch (IOException e) {
+		        	System.out.print("IOException" + e);
+		        }
+		        
+//				return GeneralUtilities.response("000", "successfully.", HttpStatus.OK);
 			}
 			return GeneralUtilities.response("002", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
 		}
