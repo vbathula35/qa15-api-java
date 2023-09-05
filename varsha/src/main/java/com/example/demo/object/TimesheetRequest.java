@@ -1,20 +1,33 @@
 package com.example.demo.object;
 
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class TimesheetRequest {
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String email;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String date;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String day;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Integer hours;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Boolean isHolyday;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String notes;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String startDate;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String endDate;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Integer week;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Integer month;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Integer year;
-	
+
 	
 	public String getEmail() {
 		return email;
@@ -22,6 +35,8 @@ public class TimesheetRequest {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+	
 	public String getDate() {
 		return date;
 	}

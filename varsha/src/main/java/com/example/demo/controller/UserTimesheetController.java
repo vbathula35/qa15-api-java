@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -43,9 +44,9 @@ public class UserTimesheetController {
 	
 	@PostMapping("/list")
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
-	public ResponseEntity<?> list(@CookieValue("user") String user, @RequestBody AllUserRequest request) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> list(@CookieValue("user") String user, @RequestBody TimesheetRequest request) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			return new ResponseEntity<> (timeSheetService.getAllTimesheets(user, (userService.isAdminUser(user) || userService.isSuperAdminUser(user)),request), HttpStatus.OK);
+			return new ResponseEntity<> (timeSheetService.getWeekTimesheets(user, request), HttpStatus.OK);
 		}
 		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
 	}

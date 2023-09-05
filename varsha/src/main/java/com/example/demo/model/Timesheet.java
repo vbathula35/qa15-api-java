@@ -24,8 +24,10 @@ public class Timesheet {
 	private String email;
 	
 	@Column(name = "date")
-	private String date;
+	private Date date;
 	
+	
+
 	@Column(name = "day")
 	private String day;
 	
@@ -77,13 +79,15 @@ public class Timesheet {
 		this.email = email;
 	}
 
-	public String getDate() {
+	
+	public Date getDate() {
 		return date;
 	}
 
-	public void setDate(String date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
+
 
 	public String getDay() {
 		return day;

@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,11 +20,8 @@ public interface UserTimesheetRepository extends JpaRepository<Timesheet, Intege
 	@Query ("UPDATE UserTask SET status = :status where id = :id")
 	void updateStatusById(Integer id, String status);
 	
-	
-	@Query ("SELECT ut FROM Timesheet ut WHERE ut.email = :email AND ut.week = :week AND ut.month = :month AND ut.year = :year")
-	public List<Timesheet> findTimesheetsByWeek(String email, Integer week, Integer month, Integer year);
-	
-
+	@Query (value = "SELECT ts FROM Timesheet ts WHERE ts.date BETWEEN str_to_date(:startDate, '%Y-%m-%d') AND str_to_date(:endDate, '%Y-%m-%d') AND ts.email = :email")
+	public List<Timesheet> findTimesheetsByWeek(String email, String startDate, String endDate);
 	
 }
 
