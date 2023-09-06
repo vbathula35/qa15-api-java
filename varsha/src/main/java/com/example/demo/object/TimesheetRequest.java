@@ -27,6 +27,8 @@ public class TimesheetRequest {
 	private Integer month;
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Integer year;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String projectId;
 
 	
 	public String getEmail() {
@@ -97,8 +99,14 @@ public class TimesheetRequest {
 	public void setYear(Integer year) {
 		this.year = year;
 	}
+	public String getProjectId() {
+		return projectId;
+	}
+	public void setProjectId(String projectId) {
+		this.projectId = projectId;
+	}
 	
-
+	
 	
 	
 	

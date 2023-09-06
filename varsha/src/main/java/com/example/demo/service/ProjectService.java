@@ -11,14 +11,17 @@ import com.example.demo.object.AllUserRequest;
 import com.example.demo.object.ListResponse;
 import com.example.demo.repository.ProjectRepository;
 import com.example.demo.repository.ProjectSpecification;
+import com.example.demo.repository.UserProjectRelationshipRepository;
 import com.example.demo.repository.UserTaskSpecification;
 import com.example.demo.utils.GeneralUtilities;
 
 @Service
 public class ProjectService {
 	private ProjectRepository projectRepository;
-	public ProjectService(ProjectRepository projectRepository) {
+	private UserProjectRelationshipRepository userProjectRelationshipRepository;
+	public ProjectService(ProjectRepository projectRepository, UserProjectRelationshipRepository userProjectRelationshipRepository) {
 		this.projectRepository = projectRepository;
+		this.userProjectRelationshipRepository = userProjectRelationshipRepository;
 	}	
 	
 	
@@ -35,8 +38,8 @@ public class ProjectService {
 		
 		if (isAdmin) {
 			projectEntityList = projectRepository.findAll(pageRequest);
-		} else {			
-			projectEntityList = projectRepository.findAll(ProjectSpecification.findByCreatedBy(user), pageRequest);
+		} else {
+			projectEntityList = projectRepository.findProjectsByEmail(user, pageRequest);
 		}
 		
 		finalRes.setPageNumber(projectEntityList.getNumber());
@@ -46,5 +49,7 @@ public class ProjectService {
 		finalRes.setResults(projectEntityList.getContent());
 		return finalRes;
 	}
+	
+	
 	
 }

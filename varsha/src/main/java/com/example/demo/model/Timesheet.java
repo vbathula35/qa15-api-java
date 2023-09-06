@@ -61,6 +61,9 @@ public class Timesheet {
 	@Column(name = "year")
 	private Integer year;
 	
+	@Column(name = "projectId")
+	private String projectId;
+	 
 	
 	
 	public Integer getId() {
@@ -167,6 +170,14 @@ public class Timesheet {
 
 	public void setYear(Integer year) {
 		this.year = year;
+	}
+
+	public String getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(String projectId) {
+		this.projectId = projectId;
 	}
 
 	

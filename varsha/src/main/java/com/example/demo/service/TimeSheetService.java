@@ -110,7 +110,7 @@ public class TimeSheetService {
 	
 	public ResponseEntity<?> getWeekTimesheets(String user, TimesheetRequest request) throws InterruptedException, ExecutionException {
 		if (!request.getStartDate().isEmpty() && !request.getEndDate().isEmpty()) {
-			return new ResponseEntity<>(userTimesheetRepository.findTimesheetsByWeek(user, request.getStartDate(), request.getEndDate()), HttpStatus.OK);
+			return new ResponseEntity<>(userTimesheetRepository.findTimesheetsByUserAndProject(user, request.getProjectId()), HttpStatus.OK);
 			
 		}
 		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
