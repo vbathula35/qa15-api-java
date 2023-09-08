@@ -93,6 +93,15 @@ public class UserService {
 		return userbo.getUserRole().equals(AppConstant.REG_USER) ? true : false;
 	}
 	
+	public Boolean userPermisssion(String user, String permission ) throws InterruptedException, ExecutionException {
+		List<String> userPermissions = getUserPermissionsStringArr(user);
+		return userPermissions.contains(permission);
+	}
+	
+	public Boolean isAddProjectPermission(String user) throws InterruptedException, ExecutionException{
+		return userPermisssion(user, AppConstant.USER_PERMISSIONS.AddProject.getValue());
+	}
+	
 	public UserBo getUser(String user) throws InterruptedException, ExecutionException {
 		Optional<Users> validateUser = getUserEntity(user);
 		Users userEntity = validateUser.get();

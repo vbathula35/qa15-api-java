@@ -27,4 +27,45 @@ public class AppConstant {
 		}
 	}  
 	
+	public enum USER_PERMISSIONS {
+		ActivateSubscription("ACTVSUBSCP"),
+		ActivateUser("ACTVUSR"),
+		AddProject("ADDPROJ"),
+		AddEvent("ADEVNT"),
+		AddSubscription("ADSUBSCPTN"),
+		AddTimesheet("ADTMESHT"),
+		AddTask("ADTSK"),
+		AddUser("ADUSR"),
+		ApproveTimesheet("APPVTMESHT"),
+		CompleteEvent("CMPLTEVNT"),
+		CompleteTask("CMPLTTSK"),
+		DeActivateSubscription("DEACTVSUBS"),
+		DeActivateUser("DEACTVUSR"),
+		DenialTimesheet("DENIDTMESH"),
+		DeleteEvent("DLTEVNT"),
+		DeleteProject("DLTPROJ"),
+		DeleteSubscription("DLTSUBSCPT"),
+		DeleteTimesheet("DLTTMESHT"),
+		DeleteTask("DLTTSK"),
+		DeleteUser("DLTUSR"),
+		EditProject("EDITPROJ"),
+		EditEvent("EDTEVNT"),
+		EditSubscription("EDTSUBSCPT"),
+		EditTimesheet("EDTTMESHT"),
+		EditTask("EDTTSK"),
+		EditUser("EDTUSR"),
+		ExpireEvent("EXPEVNT"),
+		ExpiteTask("EXPTSK"),
+		PendingTimesheet("PNDGTMESHT"),
+		SendSubscription("SNDSUBSCPT"),
+		SubmitTimesheet("SUBTMESHT"),
+		ViewStyleGuide("VSTYLGUID");
+		private String value;
+		public String getValue() {
+			return value;
+		}
+		private USER_PERMISSIONS(String value) {
+			this.value = value;
+		}
+	}
 }

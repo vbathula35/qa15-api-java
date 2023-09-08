@@ -173,7 +173,7 @@ public class AuthorizationSetupController {
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<Object> getRoleAndFeatureAndPermissions(@CookieValue("user") String user, @RequestParam String roleCode) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			if(userService.isSuperAdminUser(user)) {
+			if(userService.isSuperAdminUser(user) || userService.isAdminUser(user)) {
 				return new ResponseEntity<> (authorizationService.getRoleAndFeatureAndPermission(roleCode), HttpStatus.OK);
 			}
 			errRes.setStatus("002");

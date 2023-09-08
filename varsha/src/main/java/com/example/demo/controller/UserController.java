@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,7 +60,7 @@ public class UserController {
 		return new ResponseEntity<> (userService.createNewUser(user), HttpStatus.CREATED);
 	}
 	
-	@PostMapping("/updateUser")
+	@PutMapping("/updateUser")
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<Object> updateUser(@RequestBody Users user, @CookieValue("user") String loggedinUser) throws InterruptedException, ExecutionException {
 		return new ResponseEntity<> (userService.createNewUser(user), HttpStatus.OK);

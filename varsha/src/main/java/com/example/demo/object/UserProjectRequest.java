@@ -3,16 +3,18 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class UserProjectRequest {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private String id;
+	private int id;
 	private String projectName;
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String projectDescription;
 	private String projectLocation;
 	
-	public String getId() {
+	
+
+	public int getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	public String getProjectName() {

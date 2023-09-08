@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.constant.AppConstant;
 import com.example.demo.object.AllUserRequest;
 import com.example.demo.object.TimesheetRequest;
+import com.example.demo.object.UserProjectRequest;
 import com.example.demo.service.ProjectService;
 import com.example.demo.service.UserService;
 import com.example.demo.utils.GeneralUtilities;
@@ -39,6 +40,19 @@ public class ProjectController {
 	public ResponseEntity<?> list(@CookieValue("user") String user, @RequestBody AllUserRequest request) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
 			return new ResponseEntity<> (projectService.getProject(user, userService.isAdminUser(user) || userService.isSuperAdminUser(user), request), HttpStatus.OK);
+		}
+		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
+	
+	}
+	
+	@PostMapping("/newProject")
+	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
+	public ResponseEntity<?> list(@CookieValue("user") String user, @RequestBody UserProjectRequest request) throws InterruptedException, ExecutionException {
+		if (userService.isValidActiveUser(user)) {
+			if (userService.isAddProjectPermission(user) || userService.isSuperAdminUser(user)) {
+				return new ResponseEntity<> (projectService.createNewProject(user,request), HttpStatus.OK);
+			}
+			return GeneralUtilities.response("001", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
 		}
 		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
 	

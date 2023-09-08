@@ -3,6 +3,7 @@ package com.example.demo.model;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,22 +11,34 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "user_projects")
+@Table(name = "user_projects", catalog="varsha")
 public class Project {
+	
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private UUID projectId;
+	@Column(name = "id")
+	private int id;
+	@Column(name = "projectName")
 	private String projectName;
+	@Column(name = "projectDescription")
 	private String projectDescription;
+	@Column(name = "projectLocation")
 	private String projectLocation;
+	@Column(name = "createdDate")
 	private Date createdDate;
+	@Column(name = "modifiedDate")
 	private Date modifiedDate;
+	@Column(name = "createdBy")
 	private String createdBy;
-	public UUID getProjectId() {
-		return projectId;
+	
+	
+
+
+	public int getId() {
+		return id;
 	}
-	public void setProjectId(UUID projectId) {
-		this.projectId = projectId;
+	public void setId(int id) {
+		this.id = id;
 	}
 	public String getProjectName() {
 		return projectName;

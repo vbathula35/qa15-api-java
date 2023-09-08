@@ -13,20 +13,22 @@ public class UserProjectRelationship {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private UUID id;
-	private String projectId;
+	private Integer id;
+	private int projectId;
 	private String email;
 	private Boolean  isAdmin;
-	public UUID getId() {
+	
+	public Integer getId() {
 		return id;
 	}
-	public void setId(UUID id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
-	public String getProjectId() {
+	
+	public int getProjectId() {
 		return projectId;
 	}
-	public void setProjectId(String projectId) {
+	public void setProjectId(int projectId) {
 		this.projectId = projectId;
 	}
 	public String getEmail() {
