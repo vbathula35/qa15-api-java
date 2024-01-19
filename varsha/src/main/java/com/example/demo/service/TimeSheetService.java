@@ -97,6 +97,7 @@ public class TimeSheetService {
 				timeSheetEntity.setWeek(timeSheet.getWeek());
 				timeSheetEntity.setMonth(timeSheet.getMonth());
 				timeSheetEntity.setYear(timeSheet.getYear());
+				timeSheetEntity.setProjectId(timeSheet.getProjectId());
 				if (timeSheet.getNotes() != null && !timeSheet.getNotes().isEmpty()) {
 					timeSheetEntity.setNotes(timeSheet.getNotes());
 					timeSheetEntity.setNotesUpdatedBy(email);

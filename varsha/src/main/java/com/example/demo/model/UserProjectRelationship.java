@@ -43,7 +43,4 @@ public class UserProjectRelationship {
 	public void setIsAdmin(Boolean isAdmin) {
 		this.isAdmin = isAdmin;
 	}
-	
-	
-	
 }

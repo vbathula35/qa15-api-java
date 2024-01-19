@@ -7,8 +7,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import com.example.demo.model.Project;
+import com.example.demo.model.UserEvent;
 
-public interface ProjectRepository extends JpaRepository<Project, String> , JpaSpecificationExecutor<Project>{
+public interface ProjectRepository extends JpaRepository<Project, Integer> , JpaSpecificationExecutor<Project>{
 	@Transactional
 	@Modifying
 	@Query ("UPDATE Project SET projectDescription = :desc where id = :id")
@@ -18,5 +19,3 @@ public interface ProjectRepository extends JpaRepository<Project, String> , JpaS
 	@Query("SELECT p FROM Project p JOIN UserProjectRelationship up ON p.id = p.id WHERE up.email = :email")
 	public Page<Project> findProjectsByEmail(String email, Pageable pageable);
 }
-
-

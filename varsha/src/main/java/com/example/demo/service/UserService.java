@@ -102,6 +102,12 @@ public class UserService {
 		return userPermisssion(user, AppConstant.USER_PERMISSIONS.AddProject.getValue());
 	}
 	
+	public Boolean isEditProjectPermission(String user) throws InterruptedException, ExecutionException{
+		return userPermisssion(user, AppConstant.USER_PERMISSIONS.EditProject.getValue());
+	}
+	
+	
+	
 	public UserBo getUser(String user) throws InterruptedException, ExecutionException {
 		Optional<Users> validateUser = getUserEntity(user);
 		Users userEntity = validateUser.get();

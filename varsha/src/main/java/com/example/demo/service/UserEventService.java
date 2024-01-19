@@ -110,7 +110,7 @@ public class UserEventService {
 		if (!events.isEmpty() || events.size() > 0) {
 			events.forEach(evt -> {
 				if (isAdmin) {
-					userEventRepository.deleteById(evt);;
+					userEventRepository.deleteById(evt);
 				} else {
 					Optional<UserEvent> findEntity = userEventRepository.findById(evt);
 					if (findEntity.get().getEmail().equals(user)) {

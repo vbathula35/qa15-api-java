@@ -27,7 +27,12 @@ public interface UserTimesheetRepository extends JpaRepository<Timesheet, Intege
 	public List<Timesheet> findTimesheetsByWeek(String email, String startDate, String endDate);
 	
 	@Query ("SELECT ts FROM Timesheet ts WHERE ts.projectId = :projectId AND ts.email = :email")
-	public List<Timesheet> findTimesheetsByUserAndProject(String email, String projectId);
+	public List<Timesheet> findTimesheetsByUserAndProject(String email, int projectId);
+	
+	@Transactional
+	@Modifying
+	@Query ("DELETE FROM Timesheet t WHERE t.projectId = :id")
+	void deleteTimesheetsByProjectId(int id);
 	
 }
 

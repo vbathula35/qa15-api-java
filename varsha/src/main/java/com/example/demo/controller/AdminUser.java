@@ -158,5 +158,21 @@ public class AdminUser {
 		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
 	}
 	
+	@GetMapping("/isValidUser")
+	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
+	public ResponseEntity<Response> isValidUser(@CookieValue("user") String user, @RequestParam String reqUser) throws InterruptedException, ExecutionException {
+		if (userService.isValidActiveUser(user)) {
+			if(userService.isAdminUser(user) || userService.isSuperAdminUser(user)) {
+				if (userService.isValidActiveUser(reqUser)) {
+					return GeneralUtilities.response("valid", reqUser, HttpStatus.OK);
+				}
+				return GeneralUtilities.response("inValid", reqUser, HttpStatus.CONFLICT);
+			}
+			return GeneralUtilities.response("002", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
+		}
+		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
+		
+	}
+	
 	
 }

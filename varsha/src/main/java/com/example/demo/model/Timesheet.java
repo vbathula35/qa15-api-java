@@ -63,7 +63,7 @@ public class Timesheet {
 	private Integer year;
 	
 	@Column(name = "projectId")
-	private String projectId;
+	private int projectId;
 	 
 	
 	
@@ -173,11 +173,11 @@ public class Timesheet {
 		this.year = year;
 	}
 
-	public String getProjectId() {
+	public int getProjectId() {
 		return projectId;
 	}
 
-	public void setProjectId(String projectId) {
+	public void setProjectId(int projectId) {
 		this.projectId = projectId;
 	}
 
