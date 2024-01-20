@@ -1,4 +1,9 @@
 package com.example.demo.service;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +22,7 @@ import com.example.demo.model.UserProjectRelationship;
 import com.example.demo.object.AllUserRequest;
 import com.example.demo.object.ListResponse;
 import com.example.demo.object.Response;
+import com.example.demo.object.UserProjectRelationshipObject;
 import com.example.demo.object.UserProjectRequest;
 import com.example.demo.repository.ProjectRepository;
 import com.example.demo.repository.UserProjectRelationshipRepository;
@@ -25,6 +31,9 @@ import com.example.demo.utils.GeneralUtilities;
 
 @Service
 public class ProjectService {
+	SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
+	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	
 	private ProjectRepository projectRepository;
 	private UserProjectRelationshipRepository userProjectRelationshipRepository;
 	private UserTimesheetRepository userTimesheetRepository;
@@ -120,6 +129,17 @@ public class ProjectService {
 		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
 	}
 	
+	public ResponseEntity<?> getProjectUserDetails(String user, String email, int projectId) throws InterruptedException, ExecutionException {
+		if (projectId != 0 && !email.isEmpty()) {
+			UserProjectRelationship users = userProjectRelationshipRepository.findByEmailAndProject(email, projectId);
+			if(!users.getEmail().isEmpty()) {
+				return new ResponseEntity<> (users, HttpStatus.OK);
+			}
+			return GeneralUtilities.response("003", "Unable find Users", HttpStatus.CONFLICT);
+		}
+		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
+	}
+	
 	public ResponseEntity<?> addUsersToProject(String user, List<UserProjectRelationship> req) throws InterruptedException, ExecutionException {
 		if (req.size() > 0) {
 			 userProjectRelationshipRepository.saveAll(req);
@@ -134,6 +154,31 @@ public class ProjectService {
 				userProjectRelationshipRepository.deleteByEmailAndProjectId(users.getProjectId(), users.getEmail());
 			});
 			return GeneralUtilities.response("000", "User removed from project successfully", HttpStatus.OK);
+		}
+		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
+	}
+	
+	public ResponseEntity<?> updateUserInProject(String user, UserProjectRelationshipObject req) throws InterruptedException, ExecutionException {
+		if (!req.getEmail().isEmpty() && req.getProjectId() != 0) {
+			UserProjectRelationship newObj = new UserProjectRelationship();
+			newObj.setProjectId(req.getProjectId());
+			newObj.setEmail(req.getEmail());
+			newObj.setEmployerPercentage(req.getEmployerPercentage());
+			newObj.setId(req.getId());
+			newObj.setIsAdmin(req.getIsAdmin());
+			newObj.setPayRate(req.getPayRate());
+			try {
+				newObj.setProjectStartDate(date.parse(req.getProjectStartDate()));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			try {
+				newObj.setProjectEndDate(date.parse(req.getProjectEndDate()));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			int res = userProjectRelationshipRepository.updateByEmailAndProjectId(newObj.getEmail(), newObj.getProjectId(), newObj.getIsAdmin(), newObj.getProjectStartDate(), newObj.getProjectEndDate(), newObj.getPayRate(), newObj.getEmployerPercentage());
+			return GeneralUtilities.response("000", "User updated successfully.", HttpStatus.OK);
 		}
 		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
 	}

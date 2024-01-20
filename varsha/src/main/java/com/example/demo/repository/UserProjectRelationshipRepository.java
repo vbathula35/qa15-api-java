@@ -1,4 +1,5 @@
 package com.example.demo.repository;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,16 +21,28 @@ public interface UserProjectRelationshipRepository extends JpaRepository<UserPro
 	@Query("DELETE FROM UserProjectRelationship upr WHERE upr.projectId = :id")
 	void deleteByProjectId(Integer id);
 
-	List<UserProjectRelationship> findAllById(int id);
-	
-	List<UserProjectRelationship> findAllByProjectId(int projectId);
-	
-	List<UserProjectRelationship> findAllByEmail(String email);
-	
 	@Transactional
 	@Modifying
 	@Query("DELETE FROM UserProjectRelationship upr WHERE upr.email = :email AND upr.projectId = :projectId")
 	 void deleteByEmailAndProjectId(int projectId, String email);
+	
+	@Query("SELECT upr FROM UserProjectRelationship upr WHERE upr.email = :email AND upr.projectId = :projectId")
+	UserProjectRelationship findByEmailAndProject(String email, int projectId);
+	
+	
+	@Query("SELECT upr FROM UserProjectRelationship upr WHERE upr.projectId = :projectId")
+	List<UserProjectRelationship> findAllByProjectId(int projectId);
+	
+	@Query("SELECT upr FROM UserProjectRelationship upr WHERE upr.id = :id")
+	List<UserProjectRelationship> findAllById(int id);
+	
+	@Query("SELECT upr FROM UserProjectRelationship upr WHERE upr.email = :email")
+	List<UserProjectRelationship> findAllByEmail(String email);
+	
+	@Transactional
+	@Modifying
+	@Query("UPDATE UserProjectRelationship upr SET upr.isAdmin = :isAdmin, upr.projectStartDate = :projectStartDate, upr.projectEndDate = :projectEndDate, upr.payRate = :payRate, upr.employerPercentage = :employerPercentage WHERE upr.email = :email AND upr.projectId = :projectId")
+	int updateByEmailAndProjectId(String email, int projectId, Boolean isAdmin, Date projectStartDate, Date projectEndDate, int payRate, int employerPercentage);
 	
 }
 

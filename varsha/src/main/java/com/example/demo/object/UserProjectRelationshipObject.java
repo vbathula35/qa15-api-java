@@ -1,36 +1,24 @@
-package com.example.demo.model;
+package com.example.demo.object;
+
 import java.util.Date;
-import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-@Entity
-@Table(name = "user_projects_relationship")
-public class UserProjectRelationship {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer id;
+public class UserProjectRelationshipObject {
+	private int id;
 	private int projectId;
 	private String email;
-	private Boolean  isAdmin; 
-	private Date projectStartDate;
-	private Date projectEndDate;
+	private Boolean isAdmin; 
+	private String projectStartDate;
+	private String projectEndDate;
 	private int payRate;
 	private int employerPercentage;
-	
-	public Integer getId() {
+	public int getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(int id) {
 		this.id = id;
 	}
-	
 	public int getProjectId() {
 		return projectId;
 	}
@@ -49,16 +37,16 @@ public class UserProjectRelationship {
 	public void setIsAdmin(Boolean isAdmin) {
 		this.isAdmin = isAdmin;
 	}
-	public Date getProjectStartDate() {
+	public String getProjectStartDate() {
 		return projectStartDate;
 	}
-	public void setProjectStartDate(Date projectStartDate) {
+	public void setProjectStartDate(String projectStartDate) {
 		this.projectStartDate = projectStartDate;
 	}
-	public Date getProjectEndDate() {
+	public String getProjectEndDate() {
 		return projectEndDate;
 	}
-	public void setProjectEndDate(Date projectEndDate) {
+	public void setProjectEndDate(String projectEndDate) {
 		this.projectEndDate = projectEndDate;
 	}
 	public int getPayRate() {
@@ -73,4 +61,6 @@ public class UserProjectRelationship {
 	public void setEmployerPercentage(int employerPercentage) {
 		this.employerPercentage = employerPercentage;
 	}
+	
+	
 }

@@ -1,6 +1,9 @@
 package com.example.demo.utils;
 
 import java.security.SecureRandom;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -19,7 +22,6 @@ public class GeneralUtilities {
 		return new ResponseEntity<Response> (res, httpStatus);
 	}
 	
-	
 	public static String valueEncoder(String val) {
 		int strength = 10;
 		String endoced  = new BCryptPasswordEncoder(strength, new SecureRandom()).encode(val);
@@ -35,4 +37,5 @@ public class GeneralUtilities {
 	public static Direction sortDirection(String value) {
 		return   value.equals("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
 	}
+	
 }
