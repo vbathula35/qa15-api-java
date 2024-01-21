@@ -37,5 +37,11 @@ public interface PaymentsRepository extends JpaRepository<Payments, Integer> , J
 	@Modifying
 	@Query ("DELETE FROM Payments p WHERE p.paymentId = :paymentId")
 	int deletePaymentByPaymentId(int paymentId);
+	
+	@Query("SELECT p FROM Payments p "
+			+ "JOIN PaymentProjectRelationship ppr "
+			+ "ON p.paymentId = ppr.paymentId "
+			+ "WHERE ppr.projectId = :projectId AND ppr.email = :email AND ppr.month = :month AND ppr.year = :year")
+	public Payments findByUserAndProjectId(int projectId, int month, int year, String email);
 
 }

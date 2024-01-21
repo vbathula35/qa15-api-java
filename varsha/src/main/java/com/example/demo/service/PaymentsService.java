@@ -113,4 +113,16 @@ public class PaymentsService {
 		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
 	}
 	
+	public ResponseEntity<?> paymentDetailsByProject(String user, PaymentObject request) throws InterruptedException, ExecutionException {
+		if (!request.getEmail().isEmpty() && request.getProjectId() > 0 && request.getYear() > 0 && request.getMonth() > 0) {
+			
+			Payments payment = paymentsRepository.findByUserAndProjectId(request.getProjectId(), request.getMonth(), request.getYear(), request.getEmail());
+			if (payment.getPaymentId() > 0) {
+				return new ResponseEntity<> (payment, HttpStatus.OK);
+			}
+			return GeneralUtilities.response("003", "Unable to find payment.", HttpStatus.CONFLICT);
+		}
+		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
+	}
+	
 }

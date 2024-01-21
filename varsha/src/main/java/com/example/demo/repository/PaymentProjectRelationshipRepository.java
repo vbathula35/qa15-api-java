@@ -24,4 +24,5 @@ public interface PaymentProjectRelationshipRepository extends JpaRepository<Paym
 	@Modifying
 	@Query ("DELETE FROM PaymentProjectRelationship ppr WHERE ppr.paymentId = :paymentId")
 	int deletePaymentByPaymentId(int paymentId);
+
 }

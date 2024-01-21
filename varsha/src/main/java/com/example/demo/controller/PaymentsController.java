@@ -105,6 +105,21 @@ public class PaymentsController {
 	}
 	
 	
+	
+	@PostMapping("/paymentdetailsByProject")
+	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
+	public ResponseEntity<?> paymentdetailsByProject(@CookieValue("user") String user, @RequestBody PaymentObject request) throws InterruptedException, ExecutionException {
+		if (userService.isValidActiveUser(user)) {
+			if (userService.isSuperAdminUser(user) || userService.isAdminUser(user)) {
+				return new ResponseEntity<> (paymentsService.paymentDetailsByProject(user, request), HttpStatus.OK);
+			}
+			request.setEmail(user);
+			return new ResponseEntity<> (paymentsService.paymentDetailsByProject(user, request), HttpStatus.OK);
+		}
+		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
+	}
+	
+	
 
 
 }
