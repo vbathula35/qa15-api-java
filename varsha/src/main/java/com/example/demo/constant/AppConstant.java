@@ -30,6 +30,7 @@ public class AppConstant {
 	public enum USER_PERMISSIONS {
 		ActivateSubscription("ACTVSUBSCP"),
 		ActivateUser("ACTVUSR"),
+		AddPayment("ADPAY"),
 		AddProject("ADDPROJ"),
 		AddEvent("ADEVNT"),
 		AddSubscription("ADSUBSCPTN"),
@@ -43,11 +44,13 @@ public class AppConstant {
 		DeActivateUser("DEACTVUSR"),
 		DenialTimesheet("DENIDTMESH"),
 		DeleteEvent("DLTEVNT"),
+		DeletePayment("DLTPAY"),
 		DeleteProject("DLTPROJ"),
 		DeleteSubscription("DLTSUBSCPT"),
 		DeleteTimesheet("DLTTMESHT"),
 		DeleteTask("DLTTSK"),
 		DeleteUser("DLTUSR"),
+		EditPayment("EDITPAY"),
 		EditProject("EDITPROJ"),
 		EditEvent("EDTEVNT"),
 		EditSubscription("EDTSUBSCPT"),
@@ -60,6 +63,7 @@ public class AppConstant {
 		SendSubscription("SNDSUBSCPT"),
 		SubmitTimesheet("SUBTMESHT"),
 		ViewStyleGuide("VSTYLGUID");
+		
 		private String value;
 		public String getValue() {
 			return value;

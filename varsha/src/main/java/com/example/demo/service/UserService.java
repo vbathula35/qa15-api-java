@@ -106,6 +106,18 @@ public class UserService {
 		return userPermisssion(user, AppConstant.USER_PERMISSIONS.EditProject.getValue());
 	}
 	
+	public Boolean isAddPaymentPermission(String user) throws InterruptedException, ExecutionException {
+		return userPermisssion(user, AppConstant.USER_PERMISSIONS.AddPayment.getValue());
+	}
+	
+	public Boolean isEditPaymentPermission(String user) throws InterruptedException, ExecutionException {
+		return userPermisssion(user, AppConstant.USER_PERMISSIONS.EditPayment.getValue());
+	}
+
+	public Boolean isDeletePaymentPermission(String user) throws InterruptedException, ExecutionException {
+		return userPermisssion(user, AppConstant.USER_PERMISSIONS.DeletePayment.getValue());
+	}
+	
 	
 	
 	public UserBo getUser(String user) throws InterruptedException, ExecutionException {

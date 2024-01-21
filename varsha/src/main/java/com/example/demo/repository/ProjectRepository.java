@@ -16,6 +16,6 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> , Jpa
 	void updateStatusById(Integer id, String desc);
 	
 	
-	@Query("SELECT p FROM Project p JOIN UserProjectRelationship up ON p.id = p.id WHERE up.email = :email")
+	@Query("SELECT p FROM Project p JOIN UserProjectRelationship up ON p.id = up.projectId WHERE up.email = :email")
 	public Page<Project> findProjectsByEmail(String email, Pageable pageable);
 }

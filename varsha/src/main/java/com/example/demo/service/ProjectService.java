@@ -182,5 +182,16 @@ public class ProjectService {
 		}
 		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
 	}
+	
+	public ResponseEntity<?> checkUsersInProject(String user, String email, int projectId) throws InterruptedException, ExecutionException {
+		if (!email.isEmpty() && projectId > 0) {
+			UserProjectRelationship res = userProjectRelationshipRepository.findByEmailAndProject(email, projectId);
+			if (!res.getEmail().isEmpty()) {
+				return GeneralUtilities.response("000", res.getEmail(), HttpStatus.OK);
+			}
+			return GeneralUtilities.response("003", "Unable find Users", HttpStatus.CONFLICT);
+		}
+		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
+	}
 
 };
