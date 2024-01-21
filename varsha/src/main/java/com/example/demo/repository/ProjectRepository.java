@@ -18,4 +18,6 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> , Jpa
 	
 	@Query("SELECT p FROM Project p JOIN UserProjectRelationship up ON p.id = up.projectId WHERE up.email = :email")
 	public Page<Project> findProjectsByEmail(String email, Pageable pageable);
+	
+	
 }

@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -25,7 +27,7 @@ public class Timesheet {
 	private String email;
 	
 	@Column(name = "date")
-	private Date date;
+	private LocalDate date;
 	
 	
 
@@ -84,11 +86,11 @@ public class Timesheet {
 	}
 
 	
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 

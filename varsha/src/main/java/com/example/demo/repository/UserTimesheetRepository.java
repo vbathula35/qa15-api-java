@@ -1,5 +1,7 @@
 package com.example.demo.repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -23,8 +25,9 @@ public interface UserTimesheetRepository extends JpaRepository<Timesheet, Intege
 	@Query ("UPDATE UserTask SET status = :status where id = :id")
 	void updateStatusById(Integer id, String status);
 	
-	@Query (value = "SELECT ts FROM Timesheet ts WHERE ts.date BETWEEN str_to_date(:startDate, '%Y-%m-%d') AND str_to_date(:endDate, '%Y-%m-%d') AND ts.email = :email")
-	public List<Timesheet> findTimesheetsByWeek(String email, String startDate, String endDate);
+//	@Query (value = "SELECT ts FROM Timesheet ts WHERE ts.date >= :startDate AND ts.date <= :endDate AND ts.email = :email AND ts.projectId = :projectId")
+	@Query (value = "SELECT ts FROM Timesheet ts WHERE ts.date BETWEEN :startDate AND :endDate AND ts.email = :email AND ts.projectId = :projectId")
+	public List<Timesheet> findTimesheetsByWeek(String email, LocalDate startDate, LocalDate endDate, int projectId);
 	
 	@Query ("SELECT ts FROM Timesheet ts WHERE ts.projectId = :projectId AND ts.email = :email")
 	public List<Timesheet> findTimesheetsByUserAndProject(String email, int projectId);

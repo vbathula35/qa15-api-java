@@ -107,7 +107,7 @@ public class ProjectService {
 		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
 	}
 	
-	public ResponseEntity<?> projectDetails(String user, int id) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> projectDetails(String email, int id) throws InterruptedException, ExecutionException {
 		if (id != 0) {
 			Optional<Project> proj = projectRepository.findById(id);
 			if(!proj.isEmpty()) {
@@ -130,7 +130,7 @@ public class ProjectService {
 	}
 	
 	public ResponseEntity<?> getProjectUserDetails(String user, String email, int projectId) throws InterruptedException, ExecutionException {
-		if (projectId != 0 && !email.isEmpty()) {
+		if (projectId > 0 && !email.isEmpty()) {
 			UserProjectRelationship users = userProjectRelationshipRepository.findByEmailAndProject(email, projectId);
 			if(!users.getEmail().isEmpty()) {
 				return new ResponseEntity<> (users, HttpStatus.OK);
@@ -193,5 +193,4 @@ public class ProjectService {
 		}
 		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
 	}
-
 };

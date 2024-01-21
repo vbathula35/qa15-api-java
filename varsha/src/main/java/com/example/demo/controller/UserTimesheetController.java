@@ -46,7 +46,20 @@ public class UserTimesheetController {
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<?> list(@CookieValue("user") String user, @RequestBody TimesheetRequest request) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			return new ResponseEntity<> (timeSheetService.getWeekTimesheets(user, request), HttpStatus.OK);
+			if(userService.isSuperAdminUser(user) || userService.isAdminUser(user)) {
+				try {
+					return new ResponseEntity<> (timeSheetService.getWeekTimesheets(request.getEmail(), request), HttpStatus.OK);
+				} catch (InterruptedException | ExecutionException | ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			try {
+				return new ResponseEntity<> (timeSheetService.getWeekTimesheets(user, request), HttpStatus.OK);
+			} catch (InterruptedException | ExecutionException | ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
 	}
@@ -65,7 +78,12 @@ public class UserTimesheetController {
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<?> getWeeklyTimesheets(@CookieValue("user") String user, @RequestBody TimesheetRequest request) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			return new ResponseEntity<> (timeSheetService.getWeekTimesheets(user, request), HttpStatus.OK);
+			try {
+				return new ResponseEntity<> (timeSheetService.getWeekTimesheets(user, request), HttpStatus.OK);
+			} catch (InterruptedException | ExecutionException | ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
 	}

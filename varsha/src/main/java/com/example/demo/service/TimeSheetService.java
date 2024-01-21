@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,7 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.threeten.bp.LocalDate;
 
 import com.example.demo.constant.AppConstant;
 import com.example.demo.model.Timesheet;
@@ -41,7 +42,7 @@ public class TimeSheetService {
 	
 	private UserTimesheetRepository userTimesheetRepository;
 	SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
-	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	DateTimeFormatter dateFormatter  = DateTimeFormatter.ofPattern("yyyy-MM-dd");	
 
 	
 	public TimeSheetService(UserTimesheetRepository userTimesheetRepository) {
@@ -83,12 +84,14 @@ public class TimeSheetService {
 			timesheetRequest.forEach(timeSheet -> {
 				Timesheet timeSheetEntity = new Timesheet();
 				timeSheetEntity.setEmail(email);
-				try {
-					timeSheetEntity.setDate(date.parse(timeSheet.getDate()));
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				timeSheetEntity.setDate(LocalDate.parse(timeSheet.getDate(), dateFormatter));
+				
+//				try {
+//					timeSheetEntity.setDate(date.parse(timeSheet.getDate()));
+//				} catch (ParseException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 				timeSheetEntity.setDay(timeSheet.getDay());
 				timeSheetEntity.setHours(timeSheet.getHours());
 				timeSheetEntity.setIsHolyday(timeSheet.getIsHolyday());
@@ -110,10 +113,13 @@ public class TimeSheetService {
 		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
 	}
 	
-	public ResponseEntity<?> getWeekTimesheets(String user, TimesheetRequest request) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> getWeekTimesheets(String user, TimesheetRequest request) throws InterruptedException, ExecutionException, ParseException {
 		if (!request.getStartDate().isEmpty() && !request.getEndDate().isEmpty()) {
-			return new ResponseEntity<>(userTimesheetRepository.findTimesheetsByUserAndProject(user, request.getProjectId()), HttpStatus.OK);
-			
+			LocalDate sd = LocalDate.parse(request.getStartDate(), dateFormatter);
+			LocalDate ed =  LocalDate.parse(request.getEndDate(), dateFormatter);
+			LocalDateTime startDate = sd.atStartOfDay();
+			LocalDateTime endDate = ed.atStartOfDay();
+			return new ResponseEntity<>(userTimesheetRepository.findTimesheetsByWeek(user,sd ,ed , request.getProjectId()),  HttpStatus.OK);
 		}
 		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
 	}
