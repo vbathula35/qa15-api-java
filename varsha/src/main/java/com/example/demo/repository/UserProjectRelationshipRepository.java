@@ -24,7 +24,7 @@ public interface UserProjectRelationshipRepository extends JpaRepository<UserPro
 	@Transactional
 	@Modifying
 	@Query("DELETE FROM UserProjectRelationship upr WHERE upr.email = :email AND upr.projectId = :projectId")
-	 void deleteByEmailAndProjectId(int projectId, String email);
+	 int deleteByEmailAndProjectId(int projectId, String email);
 	
 	@Query("SELECT upr FROM UserProjectRelationship upr WHERE upr.email = :email AND upr.projectId = :projectId")
 	UserProjectRelationship findByEmailAndProject(String email, int projectId);

@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.constant.AppConstant;
 import com.example.demo.object.Response;
+import com.example.demo.repository.UserFeaturesRepository;
+import com.example.demo.repository.UserPermissionsRepository;
+import com.example.demo.repository.UsersAuthRepository;
+import com.example.demo.repository.UsersRepository;
 import com.example.demo.service.AuthorizationService;
 import com.example.demo.service.EmailService;
 import com.example.demo.service.UserService;
@@ -35,7 +39,12 @@ public class AuthorizationSetupController {
 	UserService userService;
 	
 	@Autowired
-	EmailService emailService;
+	private EmailService emailService;
+	
+	
+	public AuthorizationSetupController(EmailService emailService) {
+		this.emailService = emailService;
+	}
 	
 	
 	@GetMapping("/getAllRole")
@@ -156,8 +165,8 @@ public class AuthorizationSetupController {
 	public ResponseEntity<Object> sendEmail(@CookieValue("user") String user, @RequestParam String senderEmail, @RequestParam String subject, @RequestParam String message) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
 			if(userService.isSuperAdminUser(user)) {
-				String email = emailService.sendMail(senderEmail, subject, message);
-				return new ResponseEntity<> (email, HttpStatus.OK);
+				emailService.sendSimpleMailMessage(subject, senderEmail, message);
+				return new ResponseEntity<> ("Email Sent Succefully", HttpStatus.OK);
 			}
 			errRes.setStatus("002");
 	        errRes.setDescription(AppConstant.USER_NO_PERMISSIONS);

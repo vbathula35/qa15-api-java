@@ -49,7 +49,7 @@ public class UserService {
 	Response serviceRes = new Response();
 	
 	@Autowired
-	EmailService emailService;
+	private EmailService emailService;
 	
 	@Autowired
 	AuthorizationService authorizationService;
@@ -59,13 +59,12 @@ public class UserService {
 	private UserFeaturesRepository userFeaturesRepository;
 	private UserPermissionsRepository userPermissionsRepository;
 	
-	
-	
-	
 	public UserService(UsersRepository usersRepository, 
 			UsersAuthRepository usersAuthRepository, 
 			UserFeaturesRepository userFeaturesRepository,
-			UserPermissionsRepository userPermissionsRepository) {
+			UserPermissionsRepository userPermissionsRepository,
+			EmailService emailService) {
+		this.emailService = emailService;
 		this.usersRepository = usersRepository;
 		this.usersAuthRepository = usersAuthRepository;
 		this.userFeaturesRepository = userFeaturesRepository; 
@@ -275,10 +274,13 @@ public class UserService {
 					userFeaturesRepository.saveAll(userFeatures);
 					userPermissionsRepository.saveAll(userPermissions);
 					
-					String subject = "Varsha pin verification";
-					String message = "Hi, Your verification PIN:"+ number +". Verify your pin to activate Varsha account.";
+//					String subject = "Varsha pin verification";
+//					String message = "Hi, Your verification PIN:"+ number +". Verify your pin to activate Varsha account.";
 							
-					emailService.sendMail(reValidateUserEntity.get().getEmail(), subject, message);
+//					emailService.sendMail(reValidateUserEntity.get().getEmail(), subject, message);
+					String name = newUserEntity.getLastName()+ ", " + newUserEntity.getFirstName();
+					emailService.sendSimpleMailMessage(name, newUserEntity.getEmail(), String.valueOf(number));
+					
 					return GeneralUtilities.response("000", "User created successfully. Please confirm with pin to activate account.", HttpStatus.OK);
 				}
 			}
@@ -417,9 +419,13 @@ public class UserService {
 			userVal.setfPPin(fpPin);
 			userVal.setUserStatus(AppConstant.RESET_PASSWORD);
 			usersAuthRepository.save(userVal);
-			String subject = "Varsha pin verification";
-			String message = "Hi, Your verification PIN:"+ fpPin +". Verify your pin to reset your password.";
-			emailService.sendMail(userVal.getEmail(), subject, message);
+			
+			
+//			String subject = "Varsha pin verification";
+//			String message = "Hi, Your verification PIN:"+ fpPin +". Verify your pin to reset your password.";
+//			emailService.sendMail(userVal.getEmail(), subject, message);
+			emailService.sendSimpleMailMessage("Hi", userVal.getEmail(), String.valueOf(fpPin));
+			
 			return GeneralUtilities.response("000", "Verification pin sent to your email. Please verify your pin.", HttpStatus.OK);
 		}
 		return GeneralUtilities.response("001", "Not a valid user. Please try with valid user.", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -432,9 +438,12 @@ public class UserService {
 				userVal.setUserStatus(AppConstant.ACTIVE_USER);
 				userVal.setPassword(GeneralUtilities.valueEncoder(user.getPassword()));
 				usersAuthRepository.save(userVal);
-				String subject = "Varsha pin verification";
-				String message = "Hi, Your successfully verified your pin. Your password updated successfully.";
-				emailService.sendMail(userVal.getEmail(), subject, message);
+//				String subject = "Varsha pin verification";
+//				String message = "Hi, Your successfully verified your pin. Your password updated successfully.";
+//				emailService.sendMail(userVal.getEmail(), subject, message);
+				
+				emailService.sendSimpleMailMessage("Hi", userVal.getEmail(), "Your successfully verified your pin. Your password updated successfully.");
+				
 				return GeneralUtilities.response("000", "Verification pin sent to your email. Please verify your pin.", HttpStatus.OK);
 			}
 			return GeneralUtilities.response("002", "Provided pin is not matching with our records. Please try with valid pin.", HttpStatus.INTERNAL_SERVER_ERROR);

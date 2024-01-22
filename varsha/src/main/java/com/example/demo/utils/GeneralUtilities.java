@@ -38,4 +38,13 @@ public class GeneralUtilities {
 		return   value.equals("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
 	}
 	
+	public static String getEmailContent(String name, String message) {
+		return "Hello " + name + ",\n\n"+ message; 
+	}
+	
+	public static String getContentId(String fileName) {
+		System.out.println(fileName);
+		return "<" + fileName + ">";
+	}
+	
 }

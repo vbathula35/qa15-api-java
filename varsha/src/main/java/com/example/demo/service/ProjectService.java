@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -31,13 +32,20 @@ import com.example.demo.utils.GeneralUtilities;
 
 @Service
 public class ProjectService {
+	
+	@Autowired
+	private EmailService emailService;
+	
+	
 	SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	
 	
 	private ProjectRepository projectRepository;
 	private UserProjectRelationshipRepository userProjectRelationshipRepository;
 	private UserTimesheetRepository userTimesheetRepository;
-	public ProjectService(ProjectRepository projectRepository, UserProjectRelationshipRepository userProjectRelationshipRepository, UserTimesheetRepository userTimesheetRepository) {
+	public ProjectService(EmailService emailService, ProjectRepository projectRepository, UserProjectRelationshipRepository userProjectRelationshipRepository, UserTimesheetRepository userTimesheetRepository) {
+		this.emailService = emailService;
 		this.projectRepository = projectRepository;
 		this.userProjectRelationshipRepository = userProjectRelationshipRepository;
 		this.userTimesheetRepository = userTimesheetRepository;
@@ -143,6 +151,15 @@ public class ProjectService {
 	public ResponseEntity<?> updateProject(String user, UserProjectRequest request) throws InterruptedException, ExecutionException {
 		if (request.getId() > 0) {
 			int res = projectRepository.updateProjectById(request.getProjectName(), request.getProjectLocation(), request.getProjectDescription(), request.getModifiedDate(), request.getId());
+			if(res > 0) {
+				List<UserProjectRelationship> users = userProjectRelationshipRepository.findAllByProjectId(request.getId());
+				if(users.size() > 0) {
+					users.forEach(sm -> {
+						emailService.sendSimpleMailMessage("Hi",sm.getEmail(), "Your details updated in project. Please login to account and verify.");
+					});
+				}
+				GeneralUtilities.response("000", "Project updated successfully", HttpStatus.OK);
+			}
 		}
 		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
 	}
@@ -152,8 +169,13 @@ public class ProjectService {
 	
 	public ResponseEntity<?> addUsersToProject(String user, List<UserProjectRelationship> req) throws InterruptedException, ExecutionException {
 		if (req.size() > 0) {
-			 userProjectRelationshipRepository.saveAll(req);
-			 return GeneralUtilities.response("000", "User added to project successfully", HttpStatus.OK);
+			 List<UserProjectRelationship> res = userProjectRelationshipRepository.saveAll(req);
+			 if (res.size() > 0) {
+				 res.forEach(email -> {
+					 emailService.sendSimpleMailMessage("Hi",email.getEmail(), "You are added to the project");
+				 });
+				 return GeneralUtilities.response("000", "User added to project successfully", HttpStatus.OK);
+			 }
 		}
 		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
 	}
@@ -161,7 +183,10 @@ public class ProjectService {
 	public ResponseEntity<?> removeUsersFromProject(String user, List<UserProjectRelationship> req) throws InterruptedException, ExecutionException {
 		if (req.size() > 0) {
 			req.forEach(users -> {
-				userProjectRelationshipRepository.deleteByEmailAndProjectId(users.getProjectId(), users.getEmail());
+				int res = userProjectRelationshipRepository.deleteByEmailAndProjectId(users.getProjectId(), users.getEmail());
+				if (res > 0) {
+					emailService.sendSimpleMailMessage("Hi",users.getEmail(), "You are removed to the project");
+				}
 			});
 			return GeneralUtilities.response("000", "User removed from project successfully", HttpStatus.OK);
 		}
@@ -188,7 +213,14 @@ public class ProjectService {
 				e.printStackTrace();
 			}
 			int res = userProjectRelationshipRepository.updateByEmailAndProjectId(newObj.getEmail(), newObj.getProjectId(), newObj.getIsAdmin(), newObj.getProjectStartDate(), newObj.getProjectEndDate(), newObj.getPayRate(), newObj.getEmployerPercentage());
-			return GeneralUtilities.response("000", "User updated successfully.", HttpStatus.OK);
+			
+			if(res > 0) {
+//				emailService.sendHtmlEmailWithEmbeddedFiles("Hi",newObj.getEmail(), "Your details updated in project. Please login to account and verify.");
+				emailService.sendHtmlEmail("Hi",newObj.getEmail(), "Your details updated in project. Please login to account and verify.");
+//				emailService.sendMimeMessageWithAttachments("Hi",newObj.getEmail(), "Your details updated in project. Please login to account and verify.");
+//				emailService.sendSimpleMailMessage("Hi",newObj.getEmail(), "Your details updated in project. Please login to account and verify.");
+				return GeneralUtilities.response("000", "User updated successfully.", HttpStatus.OK);
+			}
 		}
 		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
 	}

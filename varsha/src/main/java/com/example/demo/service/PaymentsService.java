@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,10 +25,18 @@ import com.example.demo.utils.GeneralUtilities;
 
 @Service
 public class PaymentsService {
+	
+	@Autowired
+	private EmailService emailService;
+	
+	
 	private PaymentsRepository  paymentsRepository;
 	private PaymentProjectRelationshipRepository paymentProjectRelationshipRepository;
+
 	
-	public PaymentsService(PaymentsRepository paymentsRepository, PaymentProjectRelationshipRepository paymentProjectRelationshipRepository) {
+	
+	public PaymentsService(EmailService emailService, PaymentsRepository paymentsRepository, PaymentProjectRelationshipRepository paymentProjectRelationshipRepository) {
+		this.emailService = emailService;
 		this.paymentsRepository = paymentsRepository;
 		this.paymentProjectRelationshipRepository = paymentProjectRelationshipRepository;
 	}	
@@ -94,6 +103,7 @@ public class PaymentsService {
 				paymentProjectRelationship.setProjectId(r.getProjectId());
 				paymentProjectRelationship.setYear(r.getYear());
 				paymentProjectRelationshipRepository.save(paymentProjectRelationship);
+				emailService.sendSimpleMailMessage("Hi", r.getEmail(), "New payment created for you. Please login to your account and verify.");
 				return GeneralUtilities.response("000", "Payment updated successfully", HttpStatus.OK);
 			}
 			return GeneralUtilities.response("003", "Unable to create payment, Please try after sometime.", HttpStatus.CONFLICT);
