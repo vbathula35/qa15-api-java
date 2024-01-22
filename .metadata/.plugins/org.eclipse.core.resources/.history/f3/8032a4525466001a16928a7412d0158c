@@ -1,0 +1,15 @@
+package com.example.demo.object;
+
+public class UserLogin {
+	User user;
+	public UserLogin() {
+		super();
+		
+	}
+	
+	public UserLogin(String email, String password) {
+		super();
+		user.setEmail(email);
+		user.setPassword(password);
+	}
+}
