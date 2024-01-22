@@ -93,14 +93,26 @@ public class ProjectController {
 		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
 	}
 	
+	
+	@PutMapping("/updateProject")
+	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
+	public ResponseEntity<?> updateProject(@CookieValue("user") String user, @RequestBody UserProjectRequest request) throws InterruptedException, ExecutionException {
+		if (userService.isValidActiveUser(user)) {
+			if (userService.isEditProjectPermission(user) || userService.isSuperAdminUser(user)) {
+				return new ResponseEntity<> (projectService.updateProject(user,request), HttpStatus.OK);
+			}
+			return GeneralUtilities.response("001", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
+		}
+		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
+	
+	}
+	
+	
 	@GetMapping("/userDetails")
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<?> getProjectUserDetails(@CookieValue("user") String user, @RequestParam String email, @RequestParam int projectId) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			if (userService.isAdminUser(user) || userService.isSuperAdminUser(user)) {
-				return new ResponseEntity<> (projectService.getProjectUserDetails(user,email, projectId), HttpStatus.OK);
-			}
-			return new ResponseEntity<> (projectService.getProjectUserDetails(user,user, projectId), HttpStatus.OK);
+			return new ResponseEntity<> (projectService.getProjectUserDetails(user,email, projectId), HttpStatus.OK);
 		}
 		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
 	}
@@ -109,7 +121,7 @@ public class ProjectController {
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<?> getProjectUsers(@CookieValue("user") String user, @RequestParam Integer id) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			if (userService.isEditProjectPermission(user) || userService.isSuperAdminUser(user)) {
+			if ((userService.isEditProjectPermission(user) || userService.isAddUserProjectPermission(user) || userService.isDeleteUserProjectPermission(user) || userService.isEditUserProjectPermission(user)) || userService.isSuperAdminUser(user)) {
 				return new ResponseEntity<> (projectService.getProjectUsers(user,id), HttpStatus.OK);
 			}
 			return GeneralUtilities.response("001", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
@@ -123,7 +135,7 @@ public class ProjectController {
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<?> addNewUsersToProject(@CookieValue("user") String user, @RequestBody List<UserProjectRelationship> request) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			if (userService.isAddProjectPermission(user) || userService.isSuperAdminUser(user)) {
+			if (userService.isAddUserProjectPermission(user) || userService.isSuperAdminUser(user)) {
 				return new ResponseEntity<> (projectService.addUsersToProject(user,request), HttpStatus.OK);
 			}
 			return GeneralUtilities.response("001", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
@@ -136,7 +148,7 @@ public class ProjectController {
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<?> removeUsersFromProject(@CookieValue("user") String user, @RequestBody List<UserProjectRelationship> request) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			if (userService.isAddProjectPermission(user) || userService.isSuperAdminUser(user)) {
+			if (userService.isDeleteUserProjectPermission(user) || userService.isSuperAdminUser(user)) {
 				return new ResponseEntity<> (projectService.removeUsersFromProject(user,request), HttpStatus.OK);
 			}
 			return GeneralUtilities.response("001", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
@@ -149,7 +161,7 @@ public class ProjectController {
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<?> removeUsersFromProject(@CookieValue("user") String user, @RequestBody UserProjectRelationshipObject request) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			if (userService.isEditProjectPermission(user) || userService.isSuperAdminUser(user)) {
+			if (userService.isEditUserProjectPermission(user) || userService.isSuperAdminUser(user)) {
 				return new ResponseEntity<> (projectService.updateUserInProject(user,request), HttpStatus.OK);
 			}
 			return GeneralUtilities.response("001", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);

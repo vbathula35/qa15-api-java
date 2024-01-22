@@ -46,7 +46,7 @@ public class PaymentsController {
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<?> list(@CookieValue("user") String user, @RequestBody AllUserRequest request,@RequestParam int projectId) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			if (userService.isSuperAdminUser(user) || userService.isAdminUser(user)) {
+			if (userService.isAddPaymentPermission(user) || userService.isEditPaymentPermission(user) || userService.isDeletePaymentPermission(user) ||  userService.isSuperAdminUser(user)) {
 				return new ResponseEntity<> (paymentsService.getPaymentsByProject(user, request, projectId), HttpStatus.OK);
 			}
 			return GeneralUtilities.response("001", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
@@ -59,7 +59,7 @@ public class PaymentsController {
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<?> paymentDetails(@CookieValue("user") String user, @RequestParam int paymentId) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			if (userService.isSuperAdminUser(user) || userService.isAdminUser(user)) {
+			if (userService.isSuperAdminUser(user) || userService.isAddPaymentPermission(user) || userService.isEditPaymentPermission(user) || userService.isDeletePaymentPermission(user)) {
 				return new ResponseEntity<> (paymentsService.paymentsDetils(user, paymentId), HttpStatus.OK);
 			}
 			return GeneralUtilities.response("001", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
@@ -72,7 +72,7 @@ public class PaymentsController {
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<?> updatePayment(@CookieValue("user") String user, @RequestBody Payments request) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			if (userService.isSuperAdminUser(user) || userService.isAdminUser(user)) {
+			if (userService.isSuperAdminUser(user) || userService.isEditPaymentPermission(user)) {
 				return new ResponseEntity<> (paymentsService.updatePayments(user, request), HttpStatus.OK);
 			}
 			return GeneralUtilities.response("001", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
@@ -84,7 +84,7 @@ public class PaymentsController {
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<?> createPayment(@CookieValue("user") String user, @RequestBody PaymentObject request) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			if (userService.isSuperAdminUser(user) || userService.isAdminUser(user)) {
+			if (userService.isSuperAdminUser(user) || userService.isAddPaymentPermission(user)) {
 				return new ResponseEntity<> (paymentsService.createPayment(user, request), HttpStatus.OK);
 			}
 			return GeneralUtilities.response("001", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
@@ -96,7 +96,7 @@ public class PaymentsController {
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<?> deletepayment(@CookieValue("user") String user, @RequestParam int paymentId) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			if (userService.isSuperAdminUser(user) || userService.isAdminUser(user)) {
+			if (userService.isSuperAdminUser(user) || userService.isDeletePaymentPermission(user)) {
 				return new ResponseEntity<> (paymentsService.deletePayment(user, paymentId), HttpStatus.OK);
 			}
 			return GeneralUtilities.response("001", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
@@ -110,7 +110,7 @@ public class PaymentsController {
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<?> paymentdetailsByProject(@CookieValue("user") String user, @RequestBody PaymentObject request) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			if (userService.isSuperAdminUser(user) || userService.isAdminUser(user)) {
+			if (userService.isSuperAdminUser(user) || userService.isAddPaymentPermission(user) || userService.isEditPaymentPermission(user) || userService.isDeletePaymentPermission(user)) {
 				return new ResponseEntity<> (paymentsService.paymentDetailsByProject(user, request), HttpStatus.OK);
 			}
 			request.setEmail(user);

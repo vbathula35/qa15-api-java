@@ -102,12 +102,24 @@ public class UserService {
 		return userPermisssion(user, AppConstant.USER_PERMISSIONS.AddProject.getValue());
 	}
 	
+	public Boolean isAddUserProjectPermission(String user) throws InterruptedException, ExecutionException{
+		return userPermisssion(user, AppConstant.USER_PERMISSIONS.AddUserProject.getValue());
+	}
+	
 	public Boolean isEditProjectPermission(String user) throws InterruptedException, ExecutionException{
 		return userPermisssion(user, AppConstant.USER_PERMISSIONS.EditProject.getValue());
 	}
 	
+	public Boolean isEditUserProjectPermission(String user) throws InterruptedException, ExecutionException{
+		return userPermisssion(user, AppConstant.USER_PERMISSIONS.EditUserProject.getValue());
+	}
+	
 	public Boolean isDeleteProjectPermission(String user) throws InterruptedException, ExecutionException{
 		return userPermisssion(user, AppConstant.USER_PERMISSIONS.DeleteProject.getValue());
+	}
+	
+	public Boolean isDeleteUserProjectPermission(String user) throws InterruptedException, ExecutionException{
+		return userPermisssion(user, AppConstant.USER_PERMISSIONS.DeleteUserProject.getValue());
 	}
 	
 	public Boolean isAddPaymentPermission(String user) throws InterruptedException, ExecutionException {

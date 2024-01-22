@@ -140,6 +140,16 @@ public class ProjectService {
 		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
 	}
 	
+	public ResponseEntity<?> updateProject(String user, UserProjectRequest request) throws InterruptedException, ExecutionException {
+		if (request.getId() > 0) {
+			int res = projectRepository.updateProjectById(request.getProjectName(), request.getProjectLocation(), request.getProjectDescription(), request.getModifiedDate(), request.getId());
+		}
+		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
+	}
+	
+	
+	
+	
 	public ResponseEntity<?> addUsersToProject(String user, List<UserProjectRelationship> req) throws InterruptedException, ExecutionException {
 		if (req.size() > 0) {
 			 userProjectRelationshipRepository.saveAll(req);
