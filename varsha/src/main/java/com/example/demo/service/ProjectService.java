@@ -40,16 +40,12 @@ public class ProjectService {
 	SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	
-	
+	@Autowired
 	private ProjectRepository projectRepository;
+	@Autowired
 	private UserProjectRelationshipRepository userProjectRelationshipRepository;
+	@Autowired
 	private UserTimesheetRepository userTimesheetRepository;
-	public ProjectService(EmailService emailService, ProjectRepository projectRepository, UserProjectRelationshipRepository userProjectRelationshipRepository, UserTimesheetRepository userTimesheetRepository) {
-		this.emailService = emailService;
-		this.projectRepository = projectRepository;
-		this.userProjectRelationshipRepository = userProjectRelationshipRepository;
-		this.userTimesheetRepository = userTimesheetRepository;
-	}	
 	
 	
 	public ListResponse getProject(String user, Boolean isAdmin, AllUserRequest request) throws InterruptedException, ExecutionException {
@@ -215,10 +211,8 @@ public class ProjectService {
 			int res = userProjectRelationshipRepository.updateByEmailAndProjectId(newObj.getEmail(), newObj.getProjectId(), newObj.getIsAdmin(), newObj.getProjectStartDate(), newObj.getProjectEndDate(), newObj.getPayRate(), newObj.getEmployerPercentage());
 			
 			if(res > 0) {
-//				emailService.sendHtmlEmailWithEmbeddedFiles("Hi",newObj.getEmail(), "Your details updated in project. Please login to account and verify.");
-				emailService.sendHtmlEmail("Hi",newObj.getEmail(), "Your details updated in project. Please login to account and verify.");
-//				emailService.sendMimeMessageWithAttachments("Hi",newObj.getEmail(), "Your details updated in project. Please login to account and verify.");
-//				emailService.sendSimpleMailMessage("Hi",newObj.getEmail(), "Your details updated in project. Please login to account and verify.");
+
+				emailService.sendHtmlEmail("Hi",newObj.getEmail(), "Your details updated in project. Please login to account and verify.", "");
 				return GeneralUtilities.response("000", "User updated successfully.", HttpStatus.OK);
 			}
 		}

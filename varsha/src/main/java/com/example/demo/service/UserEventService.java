@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -23,12 +24,11 @@ import com.example.demo.utils.GeneralUtilities;
 
 @Service
 public class UserEventService {
+	
+	@Autowired
 	private UserEventRepository userEventRepository;
 	
-	public UserEventService(UserEventRepository userEventRepository) {
-		this.userEventRepository = userEventRepository;
-	}
-	
+
 	public ListResponse getAllEvents(String user, Boolean isAdmin, AllUserRequest request) throws InterruptedException, ExecutionException {
 		ListResponse finalRes = new ListResponse();
 		Page<UserEvent> taskEntityList = null;

@@ -21,9 +21,7 @@ public interface PaymentsRepository extends JpaRepository<Payments, Integer> , J
 	@Modifying
 	@Query ("UPDATE Payments SET takeHome = :takeHome where paymentId = :paymentId")
 	void updateStatusById(Integer paymentId, int takeHome);
-	
-	
-	Optional<Payments> findByPaymentId(int paymentId);
+
 	
 	
 	@Transactional

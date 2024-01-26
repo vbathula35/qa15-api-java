@@ -25,13 +25,13 @@ import com.example.demo.utils.GeneralUtilities;
 
 
 @Service
-//@RequiredArgsConstructor
-public class EmailService implements EmailServiceInterface {
+public class EmailService {
 	@Value("${spring.mail.host}")
 	private String host;
 	@Value("${spring.mail.username")
 	private String fromEmail;
 	GeneralUtilities generalUtilities;
+	
 	
 	private JavaMailSender emailSender;
 	
@@ -42,8 +42,8 @@ public class EmailService implements EmailServiceInterface {
 		this.emailSender = emailSender;
     }
 
-	@Override
-	@Async
+	
+	@Async("asyncTaskExecutor")
 	public void sendSimpleMailMessage(String name, String to, String token) {
 		try {
 			SimpleMailMessage message = new SimpleMailMessage();
@@ -56,9 +56,7 @@ public class EmailService implements EmailServiceInterface {
 			throw new RuntimeException(exception.getMessage());
 		}
 	}
-
-	@Override
-	@Async
+	@Async("asyncTaskExecutor")
 	public void sendMimeMessageWithAttachments(String name, String to, String token) {
 		try {
 			MimeMessage message = getMimeMessage();
@@ -76,10 +74,8 @@ public class EmailService implements EmailServiceInterface {
 		}
 		
 	}
-	
-	@Override
-	@Async
-	public void sendHtmlEmail(String name, String to, String token) {
+	@Async("asyncTaskExecutor")
+	public void sendHtmlEmail(String name, String to, String token,  String fileSource) {
 		
 		try {
 			Context context = new Context();
@@ -92,17 +88,17 @@ public class EmailService implements EmailServiceInterface {
 			helper.setFrom(fromEmail);
 			helper.setTo(to);
 			helper.setText(text, true);
-			FileSystemResource file = new FileSystemResource(new File(System.getProperty("user.home") + "/Downloads/IMM5788.pdf"));
-			helper.addAttachment(file.getFilename(), file);
+			if (!fileSource.isEmpty()) {
+				FileSystemResource file = new FileSystemResource(new File(System.getProperty("user.home") + "/Downloads/IMM5788.pdf"));
+				helper.addAttachment(file.getFilename(), file);
+			}
 			emailSender.send(message);
 		}catch (Exception exception) {
 			throw new RuntimeException(exception.getMessage());
 		}
 		
 	}
-
-	@Override
-	@Async
+	@Async("asyncTaskExecutor")
 	public void sendHtmlEmailWithEmbeddedFiles(String name, String to, String token) {
 		try {
 			MimeMessage message = getMimeMessage();

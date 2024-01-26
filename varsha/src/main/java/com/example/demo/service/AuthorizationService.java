@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.model.Features;
@@ -24,24 +25,17 @@ import com.example.demo.repository.UserFeaturesRepository;
 
 @Service
 public class AuthorizationService {
+	@Autowired
 	private RolesRepository rolesRepository;
+	@Autowired
 	private FeaturesRepository featuresRepository;
+	@Autowired
 	private PermissionsRepository permissionsRepository;
+	@Autowired
 	private RoleFeatureRelationshipRepository roleFeatureRelationshipRepository;
+	@Autowired
 	private RoleFeaturePermissionRelationshipRepository roleFeaturePermissionRelationshipRepository;
-	
-	public AuthorizationService(RolesRepository rolesRepository, 
-			FeaturesRepository featuresRepository, 
-			UserFeaturesRepository userFeaturesRepository,
-			PermissionsRepository permissionsRepository,
-			RoleFeatureRelationshipRepository roleFeatureRelationshipRepository,
-			RoleFeaturePermissionRelationshipRepository roleFeaturePermissionRelationshipRepository) {
-		this.rolesRepository = rolesRepository;
-		this.featuresRepository = featuresRepository;
-		this.permissionsRepository = permissionsRepository;
-		this.roleFeatureRelationshipRepository = roleFeatureRelationshipRepository;
-		this.roleFeaturePermissionRelationshipRepository = roleFeaturePermissionRelationshipRepository;
-	}
+
 	
 	
 	public List<String> getRoleFeaturesStringArr(String role) {

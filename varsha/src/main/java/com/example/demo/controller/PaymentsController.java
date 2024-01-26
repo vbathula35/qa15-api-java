@@ -46,7 +46,7 @@ public class PaymentsController {
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<?> list(@CookieValue("user") String user, @RequestBody AllUserRequest request,@RequestParam int projectId) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			if (userService.isAddPaymentPermission(user) || userService.isEditPaymentPermission(user) || userService.isDeletePaymentPermission(user) ||  userService.isSuperAdminUser(user)) {
+			if (userService.isViewPaymentPermission(user) || userService.isAddPaymentPermission(user) || userService.isEditPaymentPermission(user) || userService.isDeletePaymentPermission(user) ||  userService.isSuperAdminUser(user)) {
 				return new ResponseEntity<> (paymentsService.getPaymentsByProject(user, request, projectId), HttpStatus.OK);
 			}
 			return GeneralUtilities.response("001", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
@@ -59,7 +59,7 @@ public class PaymentsController {
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<?> paymentDetails(@CookieValue("user") String user, @RequestParam int paymentId) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			if (userService.isSuperAdminUser(user) || userService.isAddPaymentPermission(user) || userService.isEditPaymentPermission(user) || userService.isDeletePaymentPermission(user)) {
+			if (userService.isSuperAdminUser(user) || userService.isViewPaymentPermission(user) || userService.isAddPaymentPermission(user) || userService.isEditPaymentPermission(user) || userService.isDeletePaymentPermission(user)) {
 				return new ResponseEntity<> (paymentsService.paymentsDetils(user, paymentId), HttpStatus.OK);
 			}
 			return GeneralUtilities.response("001", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
@@ -110,7 +110,7 @@ public class PaymentsController {
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<?> paymentdetailsByProject(@CookieValue("user") String user, @RequestBody PaymentObject request) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			if (userService.isSuperAdminUser(user) || userService.isAddPaymentPermission(user) || userService.isEditPaymentPermission(user) || userService.isDeletePaymentPermission(user)) {
+			if (userService.isSuperAdminUser(user) || userService.isViewPaymentPermission(user) || userService.isAddPaymentPermission(user) || userService.isEditPaymentPermission(user) || userService.isDeletePaymentPermission(user)) {
 				return new ResponseEntity<> (paymentsService.paymentDetailsByProject(user, request), HttpStatus.OK);
 			}
 			request.setEmail(user);
@@ -119,6 +119,22 @@ public class PaymentsController {
 		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
 	}
 	
+	
+	
+	@GetMapping("/paymentDetailsByUserAndProject")
+	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
+	public ResponseEntity<?> paymentDetailsByUserAndProject(@CookieValue("user") String user, @RequestParam String email, @RequestParam int projectId) throws InterruptedException, ExecutionException {
+		if (userService.isValidActiveUser(user) && (userService.isViewPaymentPermission(user) || userService.isAddPaymentPermission(user) || userService.isEditPaymentPermission(user) || userService.isDeletePaymentPermission(user))) { 
+			String emailStr = "";
+			if(userService.isSuperAdminUser(user) || userService.isAdminUser(user)) {
+				emailStr = email;
+			} else {
+				emailStr = user;
+			}
+			return new ResponseEntity<> (paymentsService.paymentDetailsByUserAndProject(email, projectId), HttpStatus.OK);
+		}
+		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
+	}
 	
 
 

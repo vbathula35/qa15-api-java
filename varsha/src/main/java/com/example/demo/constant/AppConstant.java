@@ -65,8 +65,8 @@ public class AppConstant {
 		PendingTimesheet("PNDGTMESHT"),
 		SendSubscription("SNDSUBSCPT"),
 		SubmitTimesheet("SUBTMESHT"),
-		ViewStyleGuide("VSTYLGUID");
-		
+		ViewStyleGuide("VSTYLGUID"),
+		ViewPayment("VIEWPAY");
 		private String value;
 		public String getValue() {
 			return value;

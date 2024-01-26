@@ -1,5 +1,7 @@
 package com.example.demo.repository;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -19,6 +21,9 @@ public interface PaymentProjectRelationshipRepository extends JpaRepository<Paym
 	
 	@Query ("SELECT ppr FROM PaymentProjectRelationship ppr WHERE ppr.projectId = :projectId AND ppr.email = :email")
 	public Page<?> findPaymentsByProjectIdAndEmail(Pageable pageable, int projectId, String email);
+	
+	@Query ("SELECT ppr FROM PaymentProjectRelationship ppr WHERE ppr.projectId = :projectId AND ppr.email = :email")
+	public List<PaymentProjectRelationship> findPaymentsByProjectIdAndEmailWithOutPagination(int projectId, String email);
 	
 	@Transactional
 	@Modifying

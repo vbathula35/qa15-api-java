@@ -54,23 +54,15 @@ public class UserService {
 	@Autowired
 	AuthorizationService authorizationService;
 	
+	@Autowired
 	private UsersRepository usersRepository;
+	@Autowired
 	private UsersAuthRepository usersAuthRepository;
+	@Autowired
 	private UserFeaturesRepository userFeaturesRepository;
+	@Autowired
 	private UserPermissionsRepository userPermissionsRepository;
 	
-	public UserService(UsersRepository usersRepository, 
-			UsersAuthRepository usersAuthRepository, 
-			UserFeaturesRepository userFeaturesRepository,
-			UserPermissionsRepository userPermissionsRepository,
-			EmailService emailService) {
-		this.emailService = emailService;
-		this.usersRepository = usersRepository;
-		this.usersAuthRepository = usersAuthRepository;
-		this.userFeaturesRepository = userFeaturesRepository; 
-		this.userPermissionsRepository = userPermissionsRepository;
-	}
-
 	
 	public Boolean isValidActiveUser(String user) throws InterruptedException, ExecutionException {
 		UserBo userbo = getUser(user);
@@ -119,6 +111,10 @@ public class UserService {
 	
 	public Boolean isDeleteUserProjectPermission(String user) throws InterruptedException, ExecutionException{
 		return userPermisssion(user, AppConstant.USER_PERMISSIONS.DeleteUserProject.getValue());
+	}
+	
+	public Boolean isViewPaymentPermission(String user) throws InterruptedException, ExecutionException {
+		return userPermisssion(user, AppConstant.USER_PERMISSIONS.ViewPayment.getValue());
 	}
 	
 	public Boolean isAddPaymentPermission(String user) throws InterruptedException, ExecutionException {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -21,11 +22,10 @@ import com.example.demo.utils.GeneralUtilities;
 
 @Service
 public class UserSubscriptionsService {
-	private UserSubscriptionsRepository userSubscriptionsRepository;
 	
-	public UserSubscriptionsService(UserSubscriptionsRepository userSubscriptionsRepository) {
-		this.userSubscriptionsRepository = userSubscriptionsRepository;
-	}
+	@Autowired
+	private UserSubscriptionsRepository userSubscriptionsRepository;
+
 	
 	public Boolean findSubscriptionEmail(String email) throws InterruptedException, ExecutionException {
 		UserSubscriptions findEmail = userSubscriptionsRepository.findByEmail(email);

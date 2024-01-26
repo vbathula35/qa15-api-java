@@ -42,9 +42,7 @@ public class AuthorizationSetupController {
 	private EmailService emailService;
 	
 	
-	public AuthorizationSetupController(EmailService emailService) {
-		this.emailService = emailService;
-	}
+	public AuthorizationSetupController() {}
 	
 	
 	@GetMapping("/getAllRole")

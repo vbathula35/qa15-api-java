@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -29,17 +31,11 @@ public class PaymentsService {
 	@Autowired
 	private EmailService emailService;
 	
-	
+	@Autowired
 	private PaymentsRepository  paymentsRepository;
+	@Autowired
 	private PaymentProjectRelationshipRepository paymentProjectRelationshipRepository;
 
-	
-	
-	public PaymentsService(EmailService emailService, PaymentsRepository paymentsRepository, PaymentProjectRelationshipRepository paymentProjectRelationshipRepository) {
-		this.emailService = emailService;
-		this.paymentsRepository = paymentsRepository;
-		this.paymentProjectRelationshipRepository = paymentProjectRelationshipRepository;
-	}	
 	
 	public ListResponse getPaymentsByProject(String user, AllUserRequest request, int projectId) throws InterruptedException, ExecutionException {
 		ListResponse finalRes = new ListResponse();
@@ -59,7 +55,7 @@ public class PaymentsService {
 	
 	public ResponseEntity<?> paymentsDetils(String user, int paymentId) throws InterruptedException, ExecutionException {
 		if (paymentId != 0) {
-			Optional<Payments> payment = paymentsRepository.findByPaymentId(paymentId);
+			Optional<Payments> payment = paymentsRepository.findById(paymentId);
 			if (!payment.isEmpty()) {
 				return new ResponseEntity<> (payment, HttpStatus.OK);
 			}
@@ -131,6 +127,36 @@ public class PaymentsService {
 				return new ResponseEntity<> (payment, HttpStatus.OK);
 			}
 			return GeneralUtilities.response("003", "Unable to find payment.", HttpStatus.CONFLICT);
+		}
+		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
+	}
+	
+	public ResponseEntity<?> paymentDetailsByUserAndProject (String email, int projectId) throws InterruptedException, ExecutionException {
+		if (!email.isEmpty() && projectId > 0) {
+			List<PaymentProjectRelationship> payReltn =  paymentProjectRelationshipRepository.findPaymentsByProjectIdAndEmailWithOutPagination(projectId, email);
+			List<Object> newPaymentArray = new ArrayList<>();
+			if (payReltn.size() > 0) {
+				payReltn.forEach(paymentRltn -> {
+					PaymentObject newPaymentObject = new PaymentObject();
+					
+					Optional<Payments> payment = paymentsRepository.findById(paymentRltn.getPaymentId());
+					
+					newPaymentObject.setEmail(paymentRltn.getEmail());
+					newPaymentObject.setYear(paymentRltn.getYear());
+					newPaymentObject.setMonth(paymentRltn.getMonth());
+					newPaymentObject.setOtherPayment(payment.get().getOtherPayment());
+					newPaymentObject.setFederalTax(payment.get().getFederalTax());
+					newPaymentObject.setStateTax(payment.get().getStateTax());
+					newPaymentObject.setTakeHome(payment.get().getTakeHome());
+					newPaymentObject.setTax(payment.get().getTax());
+					newPaymentObject.setTotalAmount(payment.get().getTotalAmount());
+					newPaymentObject.setOtherPayment(payment.get().getOtherPayment());
+					newPaymentObject.setOtherTax(payment.get().getOtherTax());
+					newPaymentArray.add(newPaymentObject);
+				});
+				return new ResponseEntity<> (newPaymentArray, HttpStatus.OK);
+			}
+			return GeneralUtilities.response("003", "Payments Not Found", HttpStatus.BAD_REQUEST);
 		}
 		return GeneralUtilities.response("002", "Bad Request", HttpStatus.BAD_REQUEST);
 	}

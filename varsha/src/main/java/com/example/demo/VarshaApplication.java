@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import org.aspectj.lang.annotation.Aspect;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,8 +14,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-//@EnableCaching(proxyTargetClass = false)
-//@EnableAsync(proxyTargetClass = false)
 public class VarshaApplication extends SpringBootServletInitializer {
 	
 	@Override

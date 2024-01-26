@@ -14,6 +14,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.text.SimpleDateFormat;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -39,16 +40,12 @@ import com.example.demo.utils.GeneralUtilities;
 
 @Service
 public class TimeSheetService {
-	
+	@Autowired
 	private UserTimesheetRepository userTimesheetRepository;
+	
 	SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
 	DateTimeFormatter dateFormatter  = DateTimeFormatter.ofPattern("yyyy-MM-dd");	
 
-	
-	public TimeSheetService(UserTimesheetRepository userTimesheetRepository) {
-		this.userTimesheetRepository = userTimesheetRepository;
-	}	
-	
 	
 	
 	public ListResponse getAllTimesheets(String user, Boolean isAdmin, AllUserRequest request) throws InterruptedException, ExecutionException {
