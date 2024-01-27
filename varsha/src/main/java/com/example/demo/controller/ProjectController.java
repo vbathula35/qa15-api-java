@@ -175,13 +175,13 @@ public class ProjectController {
 	public ResponseEntity<?> checkUserInProject(@CookieValue("user") String user, @RequestParam String email, @RequestParam int projectId) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
 			if (userService.isEditProjectPermission(user) || userService.isSuperAdminUser(user)) {
-				return new ResponseEntity<> (projectService.checkUsersInProject(user,email, projectId), HttpStatus.OK);
+				if (projectService.checkUsersInProject(user,email, projectId)) {
+					return GeneralUtilities.response("Yes", email, HttpStatus.OK);		
+				}
+				return GeneralUtilities.response("No", email, HttpStatus.CONFLICT);	
 			}
 			return GeneralUtilities.response("001", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
 		}
 		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
-	
 	}
-	
-
 }

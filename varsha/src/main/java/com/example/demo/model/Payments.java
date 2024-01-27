@@ -18,7 +18,7 @@ public class Payments {
 	private int paymentId;
 	
 	@Column(name = "totalAmount")
-	private int totalAmount;
+	private double totalAmount;
 	
 	@Column(name = "takeHome")
 	private int takeHome;
@@ -50,11 +50,11 @@ public class Payments {
 		this.paymentId = paymentId;
 	}
 
-	public int getTotalAmount() {
+	public double getTotalAmount() {
 		return totalAmount;
 	}
 
-	public void setTotalAmount(int totalAmount) {
+	public void setTotalAmount(double totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 

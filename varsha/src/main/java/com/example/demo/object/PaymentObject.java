@@ -8,7 +8,7 @@ public class PaymentObject {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private int paymentId;
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private int totalAmount;
+	private double totalAmount;
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private int takeHome;
 	@JsonInclude(JsonInclude.Include.NON_NULL)
@@ -38,10 +38,10 @@ public class PaymentObject {
 	public void setPaymentId(int paymentId) {
 		this.paymentId = paymentId;
 	}
-	public int getTotalAmount() {
+	public double getTotalAmount() {
 		return totalAmount;
 	}
-	public void setTotalAmount(int totalAmount) {
+	public void setTotalAmount(double totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 	public int getTakeHome() {

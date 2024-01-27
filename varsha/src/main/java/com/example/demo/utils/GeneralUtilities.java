@@ -12,8 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.example.demo.object.Response;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonSyntaxException;
 
-public class GeneralUtilities {
+public abstract class GeneralUtilities {
 	
 	public static ResponseEntity<Response> response(String status, String des, HttpStatus httpStatus) {
 		Response res = new Response();

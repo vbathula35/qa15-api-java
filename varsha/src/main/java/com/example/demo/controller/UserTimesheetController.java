@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -27,6 +29,7 @@ import com.example.demo.object.TimesheetRequest;
 import com.example.demo.service.TimeSheetService;
 import com.example.demo.service.UserService;
 import com.example.demo.utils.GeneralUtilities;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 @RestController
 @RequestMapping("/api/user/timesheets")
@@ -80,6 +83,43 @@ public class UserTimesheetController {
 		if (userService.isValidActiveUser(user)) {
 			try {
 				return new ResponseEntity<> (timeSheetService.getWeekTimesheets(user, request), HttpStatus.OK);
+			} catch (InterruptedException | ExecutionException | ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
+	}
+	
+	
+	@PostMapping("/submitmonthlytimesheet")
+	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
+	public ResponseEntity<?> getWeeklyTimesheets(@CookieValue("user") String user, @RequestParam String email, @RequestParam int year, @RequestParam int month, @RequestParam int projectId, @RequestBody List<TimesheetRequest> request) throws InterruptedException, ExecutionException, JsonProcessingException, ParseException {
+		if (userService.isValidActiveUser(user)) {
+			
+			String reqEmail;
+			if(userService.isSuperAdminUser(user) || userService.isAdminUser(user)) {
+				reqEmail = email;
+			} else {
+				reqEmail = user;
+			}
+			return new ResponseEntity<> (timeSheetService.submitMonthlytimesheets(reqEmail, year, month, projectId, request), HttpStatus.OK);
+		}
+		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
+	}
+	
+	@GetMapping("/timesheet")
+	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
+	public ResponseEntity<?> timesheet(@CookieValue("user") String user, @RequestParam String email, @RequestParam int year, @RequestParam int month, @RequestParam int projectId) throws InterruptedException, ExecutionException {
+		if (userService.isValidActiveUser(user)) {
+			String reqEmail;
+			if(userService.isSuperAdminUser(user) || userService.isAdminUser(user)) {
+				reqEmail = email;
+			} else {
+				reqEmail = user;
+			}
+			try {
+				return new ResponseEntity<> (timeSheetService.timesheets(reqEmail, year, month, projectId), HttpStatus.OK);
 			} catch (InterruptedException | ExecutionException | ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

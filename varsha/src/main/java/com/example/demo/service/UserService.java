@@ -66,7 +66,13 @@ public class UserService {
 	
 	public Boolean isValidActiveUser(String user) throws InterruptedException, ExecutionException {
 		UserBo userbo = getUser(user);
-		return (userbo.getEmail() != null && userbo.getUserStatus().equals(AppConstant.ACTIVE_USER)) ? true : false;
+		if (userbo != null) {
+			if (userbo.getUserStatus().equals(AppConstant.ACTIVE_USER)) {
+				return true;
+			}
+			return false;
+		}
+		return false;
 	}
 	
 	public Boolean isSuperAdminUser(String user) throws InterruptedException, ExecutionException {
@@ -133,28 +139,30 @@ public class UserService {
 	
 	public UserBo getUser(String user) throws InterruptedException, ExecutionException {
 		Optional<Users> validateUser = getUserEntity(user);
-		Users userEntity = validateUser.get();
-		UserBo userBoEntity = new UserBo();
-		userBoEntity.setEmail(userEntity.getEmail());
-		userBoEntity.setFirstName(userEntity.getFirstName());
-		userBoEntity.setLastName(userEntity.getLastName());
-		userBoEntity.setAddressLine1(userEntity.getAddressLine1());
-		userBoEntity.setAddressLine2(userEntity.getAddressLine2());
-		userBoEntity.setCity(userEntity.getCity());
-		userBoEntity.setState(userEntity.getState());
-		userBoEntity.setZipCode(userEntity.getZipCode());
-		userBoEntity.setCountry(userEntity.getCountry());
-		userBoEntity.setPhoneNumber(userEntity.getPhoneNumber());
-		userBoEntity.setUserRole(userEntity.getUserRole());
-		userBoEntity.setUserStatus(userEntity.getUserAuth().getUserStatus());
-		userBoEntity.setfPPin(userEntity.getUserAuth().getfPPin());
-		userBoEntity.setPin(userEntity.getUserAuth().getPin());
-		userBoEntity.setRegisterDate(userEntity.getUserAuth().getRegisterDate());
+		if (!validateUser.isEmpty()) {
+			Users userEntity = validateUser.get();
+			UserBo userBoEntity = new UserBo();
+			userBoEntity.setEmail(userEntity.getEmail());
+			userBoEntity.setFirstName(userEntity.getFirstName());
+			userBoEntity.setLastName(userEntity.getLastName());
+			userBoEntity.setAddressLine1(userEntity.getAddressLine1());
+			userBoEntity.setAddressLine2(userEntity.getAddressLine2());
+			userBoEntity.setCity(userEntity.getCity());
+			userBoEntity.setState(userEntity.getState());
+			userBoEntity.setZipCode(userEntity.getZipCode());
+			userBoEntity.setCountry(userEntity.getCountry());
+			userBoEntity.setPhoneNumber(userEntity.getPhoneNumber());
+			userBoEntity.setUserRole(userEntity.getUserRole());
+			userBoEntity.setUserStatus(userEntity.getUserAuth().getUserStatus());
+			userBoEntity.setfPPin(userEntity.getUserAuth().getfPPin());
+			userBoEntity.setPin(userEntity.getUserAuth().getPin());
+			userBoEntity.setRegisterDate(userEntity.getUserAuth().getRegisterDate());
 
-		userBoEntity.setUserFeatures(getUserFeaturesStringArr(userEntity.getEmail()));
-		userBoEntity.setUserPermissions(getUserPermissionsStringArr(userEntity.getEmail()));
-		
-		return userBoEntity;
+			userBoEntity.setUserFeatures(getUserFeaturesStringArr(userEntity.getEmail()));
+			userBoEntity.setUserPermissions(getUserPermissionsStringArr(userEntity.getEmail()));
+			return userBoEntity;
+		}
+		return null;
 	}
 	
 	public List<String> getUserFeaturesStringArr(String user) {

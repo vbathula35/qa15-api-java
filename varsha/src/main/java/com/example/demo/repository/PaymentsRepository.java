@@ -28,7 +28,7 @@ public interface PaymentsRepository extends JpaRepository<Payments, Integer> , J
 	@Modifying
 	@Query("UPDATE Payments p SET p.totalAmount = :totalAmount, p.tax = :tax, p.takeHome = :takeHome, p.stateTax = :stateTax, p.otherTax = :otherTax, "
 			+ "p.otherPayment = :otherPayment, p.federalTax = :federalTax, p.comments = :comments  WHERE p.paymentId = :paymentId")
-	int updatePaymentByPaymentId(int totalAmount, int tax, int takeHome, int stateTax, int otherTax, int otherPayment, int federalTax, String comments, int paymentId);
+	int updatePaymentByPaymentId(double totalAmount, int tax, int takeHome, int stateTax, int otherTax, int otherPayment, int federalTax, String comments, int paymentId);
 	
 	
 	@Transactional

@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.model.Timesheet;
+import com.example.demo.model.UserTimesheets;
 
 
 
@@ -36,6 +37,12 @@ public interface UserTimesheetRepository extends JpaRepository<Timesheet, Intege
 	@Modifying
 	@Query ("DELETE FROM Timesheet t WHERE t.projectId = :id")
 	void deleteTimesheetsByProjectId(int id);
+	
+	
+	@Query ("SELECT t FROM UserTimesheets t WHERE t.projectId = :projectId AND t.email = :email AND t.year = :year AND t.month = :month")
+	UserTimesheets findTimesheetByUserAndProject(String email, int projectId, int year, int month);
+
+	UserTimesheets saveAndFlush(UserTimesheets obj);
 	
 }
 
