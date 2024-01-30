@@ -63,7 +63,7 @@ public class UserEventService {
 		}
 	}
 	
-	public ResponseEntity<Response> createEvent(UserEvent event) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> createEvent(UserEvent event) throws InterruptedException, ExecutionException {
 		UserEvent eventEntity = userEventRepository.save(event);
 		UserEvent findEntity = (UserEvent) userEventRepository.findByEventName(event.getEventName());
 		if (!(findEntity.getEventName().isEmpty())) {
@@ -72,7 +72,7 @@ public class UserEventService {
 		return GeneralUtilities.response("002", "Unable to create event at this moment. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	public ResponseEntity<Response> eventDone(List<Integer> events, Boolean isAdmin, String user) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> eventDone(List<Integer> events, Boolean isAdmin, String user) throws InterruptedException, ExecutionException {
 		if (!events.isEmpty() || events.size() > 0) {
 			events.forEach(evt -> {
 				if (isAdmin) {
@@ -89,7 +89,7 @@ public class UserEventService {
 		return GeneralUtilities.response("002", "Please provide atlease one event.", HttpStatus.INTERNAL_SERVER_ERROR) ;
 	}
 	
-	public ResponseEntity<Response> eventExpire(List<Integer> events, Boolean isAdmin, String user) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> eventExpire(List<Integer> events, Boolean isAdmin, String user) throws InterruptedException, ExecutionException {
 		if (!events.isEmpty() || events.size() > 0) {
 			events.forEach(evt -> {
 				if (isAdmin) {
@@ -106,7 +106,7 @@ public class UserEventService {
 		return GeneralUtilities.response("002", "Please provide atlease one event.", HttpStatus.INTERNAL_SERVER_ERROR) ;
 	}
 	
-	public ResponseEntity<Response> eventDelete(List<Integer> events, Boolean isAdmin, String user) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> eventDelete(List<Integer> events, Boolean isAdmin, String user) throws InterruptedException, ExecutionException {
 		if (!events.isEmpty() || events.size() > 0) {
 			events.forEach(evt -> {
 				if (isAdmin) {

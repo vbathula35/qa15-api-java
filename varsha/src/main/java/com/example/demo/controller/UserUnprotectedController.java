@@ -40,7 +40,7 @@ public class UserUnprotectedController {
 	UserSubscriptionsService userSubscriptionsService;
 	
 	@PostMapping("/subscribe")
-	public ResponseEntity<Response> subscribe(@RequestBody UserSubscriptions data) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> subscribe(@RequestBody UserSubscriptions data) throws InterruptedException, ExecutionException {
 		if (!userSubscriptionsService.findSubscriptionEmail(data.getEmail())) {
 			UserSubscriptions user = new UserSubscriptions();
 			user.setEmail(data.getEmail());
@@ -57,17 +57,17 @@ public class UserUnprotectedController {
 	}
 	
 	@PostMapping("/forgotPassword")
-	public ResponseEntity<Response> forgotPassword(@RequestBody Email user) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> forgotPassword(@RequestBody Email user) throws InterruptedException, ExecutionException {
 		return userService.forgotPassword(user);
 	}
 	
 	@PostMapping("/resetPassword")
-	public ResponseEntity<Response> resetPassword(@RequestBody UserAuth user) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> resetPassword(@RequestBody UserAuth user) throws InterruptedException, ExecutionException {
 		return userService.resetPassword(user);
 	}
 	
 	@PostMapping("/register")
-	public ResponseEntity<Response> register(@RequestBody User user) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> register(@RequestBody User user) throws InterruptedException, ExecutionException {
 		return userService.registerNewUser(user);
 	}
 	

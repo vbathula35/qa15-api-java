@@ -14,28 +14,18 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import com.example.demo.model.Timesheet;
+
+import com.example.demo.model.Project;
 import com.example.demo.model.UserTimesheets;
 
 
 
 
-public interface UserTimesheetRepository extends JpaRepository<Timesheet, Integer>, JpaSpecificationExecutor<Timesheet> {	
-	@Transactional
-	@Modifying
-	@Query ("UPDATE UserTask SET status = :status where id = :id")
-	void updateStatusById(Integer id, String status);
-	
-//	@Query (value = "SELECT ts FROM Timesheet ts WHERE ts.date >= :startDate AND ts.date <= :endDate AND ts.email = :email AND ts.projectId = :projectId")
-	@Query (value = "SELECT ts FROM Timesheet ts WHERE ts.date BETWEEN :startDate AND :endDate AND ts.email = :email AND ts.projectId = :projectId")
-	public List<Timesheet> findTimesheetsByWeek(String email, LocalDate startDate, LocalDate endDate, int projectId);
-	
-	@Query ("SELECT ts FROM Timesheet ts WHERE ts.projectId = :projectId AND ts.email = :email")
-	public List<Timesheet> findTimesheetsByUserAndProject(String email, int projectId);
+public interface UserTimesheetRepository extends JpaRepository<UserTimesheets, Integer>, JpaSpecificationExecutor<UserTimesheets> {	
 	
 	@Transactional
 	@Modifying
-	@Query ("DELETE FROM Timesheet t WHERE t.projectId = :id")
+	@Query ("DELETE FROM UserTimesheets t WHERE t.projectId = :id")
 	void deleteTimesheetsByProjectId(int id);
 	
 	
@@ -43,6 +33,35 @@ public interface UserTimesheetRepository extends JpaRepository<Timesheet, Intege
 	UserTimesheets findTimesheetByUserAndProject(String email, int projectId, int year, int month);
 
 	UserTimesheets saveAndFlush(UserTimesheets obj);
+	
+	
+	@Query("SELECT t FROM UserTimesheets t WHERE t.projectId = :projectId")
+	public Page<UserTimesheets> findAllTimeSheetsByProject(int projectId, Pageable pageable);
+	
+	@Query("SELECT t FROM UserTimesheets t WHERE t.projectId = :projectId AND t.month = :month")
+	public Page<UserTimesheets> findAllTimeSheetsByMonthAndProject(String month, int projectId, Pageable pageable);
+	
+	@Query("SELECT t FROM UserTimesheets t WHERE t.projectId = :projectId AND t.year = :year")
+	public Page<UserTimesheets> findAllTimeSheetsByYearAndProject(String year, int projectId, Pageable pageable);
+	
+	
+	
+	@Query("SELECT t FROM UserTimesheets t WHERE t.email = :email AND t.projectId = :projectId")
+	public Page<UserTimesheets> findAllTimeSheetsByEmailAndProject(String email, int projectId, Pageable pageable);
+	
+	@Query("SELECT t FROM UserTimesheets t WHERE t.email = :email AND t.projectId = :projectId AND t.month = :month")
+	public Page<UserTimesheets> findAllTimeSheetsByEmailAndProjectAndMonth(String email, int projectId, String month, Pageable pageable);
+	
+	@Query("SELECT t FROM UserTimesheets t WHERE t.email = :email AND t.projectId = :projectId AND t.year = :year")
+	public Page<UserTimesheets> findAllTimeSheetsByEmailAndProjectAndYear(String email, int projectId, String year, Pageable pageable);
+	
+	
+	
+	@Transactional
+	@Modifying
+	@Query ("UPDATE UserTimesheets t SET t.timesheet = :timesheet WHERE t.email = :email AND t.projectId = :projectId AND t.month = :month AND t.year = :year")
+	int updateTimesheet(String email, int projectId, int month, int year, String timesheet);
+
 	
 }
 

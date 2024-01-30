@@ -60,7 +60,7 @@ public class UserTaskController {
 	
 	@PostMapping("/create")
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
-	public ResponseEntity<Response> create(@CookieValue("user") String user, @RequestBody UserTask task) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> create(@CookieValue("user") String user, @RequestBody UserTask task) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
 			task.setStatus(AppConstant.TASK_STATUS.PENDING.getValue());
 			task.setCreatedDate(new Date());
@@ -75,7 +75,7 @@ public class UserTaskController {
 	
 	@PutMapping("/done")
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
-	public ResponseEntity<Response> taskDone(@CookieValue("user") String user, @RequestBody List<Integer> tasks) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> taskDone(@CookieValue("user") String user, @RequestBody List<Integer> tasks) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
 			return userTaskService.taskDone(tasks, (userService.isAdminUser(user) || userService.isSuperAdminUser(user)), user);
 		}
@@ -84,7 +84,7 @@ public class UserTaskController {
 	
 	@PutMapping("/expire")
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
-	public ResponseEntity<Response> taskExpire(@CookieValue("user") String user, @RequestBody List<Integer> tasks) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> taskExpire(@CookieValue("user") String user, @RequestBody List<Integer> tasks) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
 			return userTaskService.taskExpire(tasks, (userService.isAdminUser(user) || userService.isSuperAdminUser(user)), user);
 		}
@@ -93,7 +93,7 @@ public class UserTaskController {
 	
 	@PostMapping("/delete")
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
-	public ResponseEntity<Response> taskDelete(@CookieValue("user") String user, @RequestBody List<Integer> tasks) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> taskDelete(@CookieValue("user") String user, @RequestBody List<Integer> tasks) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
 			return userTaskService.taskDelete(tasks, (userService.isAdminUser(user) || userService.isSuperAdminUser(user)), user);
 		}

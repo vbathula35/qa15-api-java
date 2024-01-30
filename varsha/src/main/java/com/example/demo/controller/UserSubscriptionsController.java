@@ -63,7 +63,7 @@ public class UserSubscriptionsController {
 	
 	@PutMapping("/activate")
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
-	public ResponseEntity<Response> activate(@CookieValue("user") String user, @RequestBody List<Integer> subs) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> activate(@CookieValue("user") String user, @RequestBody List<Integer> subs) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
 			if(userService.isAdminUser(user) || userService.isSuperAdminUser(user)) {
 				return userSubscriptionsService.subscriptionActivate(subs);
@@ -75,7 +75,7 @@ public class UserSubscriptionsController {
 	
 	@PutMapping("/deActivate")
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
-	public ResponseEntity<Response> deActivate(@CookieValue("user") String user, @RequestBody List<Integer> subs) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> deActivate(@CookieValue("user") String user, @RequestBody List<Integer> subs) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
 			if(userService.isAdminUser(user) || userService.isSuperAdminUser(user)) {
 				return userSubscriptionsService.subscriptionDeActivate(subs);
@@ -87,7 +87,7 @@ public class UserSubscriptionsController {
 	
 	@PostMapping("/delete")
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
-	public ResponseEntity<Response> delete(@CookieValue("user") String user, @RequestBody List<Integer> subs) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> delete(@CookieValue("user") String user, @RequestBody List<Integer> subs) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
 			if(userService.isAdminUser(user) || userService.isSuperAdminUser(user)) {
 				return userSubscriptionsService.subscriptionDelete(subs);

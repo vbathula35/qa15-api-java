@@ -74,7 +74,7 @@ public class AdminUser {
 	
 	@PostMapping("/updateUserFeaturePermissions")
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
-	public ResponseEntity<Response> updateUserFeaturePermissions(@CookieValue("user") String user, @RequestBody UserFeaturePermissions updateUser) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> updateUserFeaturePermissions(@CookieValue("user") String user, @RequestBody UserFeaturePermissions updateUser) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
 			if(userService.isAdminUser(user) || userService.isSuperAdminUser(user)) {
 				return userService.updateUserFeaturePermissions(updateUser);
@@ -91,7 +91,7 @@ public class AdminUser {
 	
 	@PutMapping("/activateUsers")
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
-	public ResponseEntity<Response> activateUsers(@CookieValue("user") String user, @RequestBody List<String> users) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> activateUsers(@CookieValue("user") String user, @RequestBody List<String> users) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
 			if(userService.isAdminUser(user) || userService.isSuperAdminUser(user)) {
 				return userService.activateUsers(users);
@@ -103,7 +103,7 @@ public class AdminUser {
 	
 	@PutMapping("/deActivateUsers")
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
-	public ResponseEntity<Response> deActivateUsers(@CookieValue("user") String user, @RequestBody List<String> users) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> deActivateUsers(@CookieValue("user") String user, @RequestBody List<String> users) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
 			if(userService.isAdminUser(user) || userService.isSuperAdminUser(user)) {
 				return userService.deActivateUsers(users);
@@ -116,7 +116,7 @@ public class AdminUser {
 	
 	@PostMapping("/deleteUsers")
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
-	public ResponseEntity<Response> deleteUsers(@CookieValue("user") String user, @RequestBody List<String> users) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> deleteUsers(@CookieValue("user") String user, @RequestBody List<String> users) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
 			if(userService.isAdminUser(user) || userService.isSuperAdminUser(user)) {
 				return userService.deleteUser(users);
@@ -160,7 +160,7 @@ public class AdminUser {
 	
 	@GetMapping("/isValidUser")
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
-	public ResponseEntity<Response> isValidUser(@CookieValue("user") String user, @RequestParam String reqUser) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> isValidUser(@CookieValue("user") String user, @RequestParam String reqUser) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
 			if (userService.isValidActiveUser(reqUser)) {
 				return GeneralUtilities.response("valid", reqUser, HttpStatus.OK);

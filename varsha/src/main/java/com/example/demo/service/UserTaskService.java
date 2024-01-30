@@ -62,7 +62,7 @@ public class UserTaskService {
 		}
 	}
 	
-	public ResponseEntity<Response> createtask(UserTask task) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> createtask(UserTask task) throws InterruptedException, ExecutionException {
 		UserTask taskEntity = userTaskRepository.save(task);
 		UserTask findEntity = (UserTask) userTaskRepository.findByTaskName(task.getTaskName());
 		if (!(findEntity.getTaskName().isEmpty())) {
@@ -71,7 +71,7 @@ public class UserTaskService {
 		return GeneralUtilities.response("002", "Unable to create task at this moment. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	public ResponseEntity<Response> taskDone(List<Integer> tasks, Boolean isAdmin, String user) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> taskDone(List<Integer> tasks, Boolean isAdmin, String user) throws InterruptedException, ExecutionException {
 		if (!tasks.isEmpty() || tasks.size() > 0) {
 			tasks.forEach(tsk -> {
 				if (isAdmin) {
@@ -88,7 +88,7 @@ public class UserTaskService {
 		return GeneralUtilities.response("002", "Please provide atlease one task.", HttpStatus.INTERNAL_SERVER_ERROR) ;
 	}
 	
-	public ResponseEntity<Response> taskExpire(List<Integer> tasks, Boolean isAdmin, String user) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> taskExpire(List<Integer> tasks, Boolean isAdmin, String user) throws InterruptedException, ExecutionException {
 		if (!tasks.isEmpty() || tasks.size() > 0) {
 			tasks.forEach(tsk -> {
 				if (isAdmin) {
@@ -105,7 +105,7 @@ public class UserTaskService {
 		return GeneralUtilities.response("002", "Please provide atlease one task.", HttpStatus.INTERNAL_SERVER_ERROR) ;
 	}
 	
-	public ResponseEntity<Response> taskDelete(List<Integer> tasks, Boolean isAdmin, String user) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> taskDelete(List<Integer> tasks, Boolean isAdmin, String user) throws InterruptedException, ExecutionException {
 		if (!tasks.isEmpty() || tasks.size() > 0) {
 			tasks.forEach(tsk -> {
 				if (isAdmin) {

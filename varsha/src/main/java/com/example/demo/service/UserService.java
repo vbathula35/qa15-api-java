@@ -236,7 +236,7 @@ public class UserService {
 		return usersRepository.save(user);
 	}
 	
-	public ResponseEntity<Response> registerNewUser(User user) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> registerNewUser(User user) throws InterruptedException, ExecutionException {
 		Optional<Users> validateUserEntity = getUserEntity(user.getEmail());
 		if(!validateUserEntity.isPresent()) {
 			String password = GeneralUtilities.valueEncoder(user.getPassword());
@@ -338,7 +338,7 @@ public class UserService {
 		return userPermissionsArry;
 	}
 	
-	public ResponseEntity<Response> activateUser(PinValidation value) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> activateUser(PinValidation value) throws InterruptedException, ExecutionException {
 		Optional<UserAuth> validateUserAuthEntity = getUserAuthEntity(value.getEmail());
 		if (validateUserAuthEntity.isPresent()) {
 			UserAuth userAuth = validateUserAuthEntity.get();
@@ -352,7 +352,7 @@ public class UserService {
 		return GeneralUtilities.response("001", "User not found in our records. Please try with valida user.", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	public ResponseEntity<Response> updateUserFeaturePermissions(UserFeaturePermissions user) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> updateUserFeaturePermissions(UserFeaturePermissions user) throws InterruptedException, ExecutionException {
 		if (!user.getEmail().isEmpty() && user.getFeatures().size() > 0 && user.getPermissions().size() > 0) {
 			userFeaturesRepository.deleteByEmail(user.getEmail());
 			userPermissionsRepository.deleteByEmail(user.getEmail());
@@ -366,7 +366,7 @@ public class UserService {
 	}
 	
 	
-	public ResponseEntity<Response> deActivateUsers(List<String> users) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> deActivateUsers(List<String> users) throws InterruptedException, ExecutionException {
 		if (!users.isEmpty() || users.size() > 0) {
 			users.forEach(user -> {
 				usersAuthRepository.saveUserStatusByEmail(user, AppConstant.INACTIVE_USER);
@@ -376,7 +376,7 @@ public class UserService {
 		return GeneralUtilities.response("003", "Please provide atlease one user.", HttpStatus.INTERNAL_SERVER_ERROR) ;
 	}
 	
-	public ResponseEntity<Response> activateUsers(List<String> users) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> activateUsers(List<String> users) throws InterruptedException, ExecutionException {
 		if (!users.isEmpty() || users.size() > 0) {
 			users.forEach(user -> {
 				usersAuthRepository.saveUserStatusByEmail(user, AppConstant.ACTIVE_USER);
@@ -386,7 +386,7 @@ public class UserService {
 		return GeneralUtilities.response("003", "Please provide atlease one user.", HttpStatus.INTERNAL_SERVER_ERROR) ;
 	}
 	
-	public ResponseEntity<Response> deleteUser(List<String> users) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> deleteUser(List<String> users) throws InterruptedException, ExecutionException {
 		if (!users.isEmpty() || users.size() > 0) {
 			users.forEach(user -> {
 				usersAuthRepository.deleteById(user);
@@ -397,7 +397,7 @@ public class UserService {
 		return GeneralUtilities.response("003", "Please provide atlease one user.", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	public ResponseEntity<Response> changePassword(ChangePassword user) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> changePassword(ChangePassword user) throws InterruptedException, ExecutionException {
 		Optional<UserAuth> findUsr = usersAuthRepository.findById(user.getEmail());
 		if (findUsr.get().getEmail() != null && !findUsr.get().getEmail().isEmpty()) {
 			if(GeneralUtilities.compareBCryptValue(user.getCurrentPassword(), findUsr.get().getPassword())) {
@@ -416,7 +416,7 @@ public class UserService {
 		return GeneralUtilities.response("002", "User not found in our records.", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	public ResponseEntity<Response> forgotPassword(Email email) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> forgotPassword(Email email) throws InterruptedException, ExecutionException {
 		UserAuth userVal = usersAuthRepository.findById(email.getEmail()).orElse(new UserAuth());
 		if (userVal.getEmail() != null && !userVal.getEmail().isEmpty()) {
 			long fpPin = (long) Math.floor(Math.random() * 9_000_000_000L) + 1_000_000_000L;
@@ -435,7 +435,7 @@ public class UserService {
 		return GeneralUtilities.response("001", "Not a valid user. Please try with valid user.", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	public ResponseEntity<Response> resetPassword(UserAuth user) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> resetPassword(UserAuth user) throws InterruptedException, ExecutionException {
 		UserAuth userVal = usersAuthRepository.findById(user.getEmail()).orElse(new UserAuth());
 		if (userVal.getEmail() != null && !userVal.getEmail().isEmpty()) {
 			if (userVal.getfPPin().equals(user.getfPPin())) {

@@ -37,7 +37,7 @@ public class UserSubscriptionsService {
 	
 	
 	
-	public ResponseEntity<Response> newSubscription(UserSubscriptions user) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> newSubscription(UserSubscriptions user) throws InterruptedException, ExecutionException {
 		if (!findSubscriptionEmail(user.getEmail())) {
 			userSubscriptionsRepository.save(user);
 			if (findSubscriptionEmail(user.getEmail())) {
@@ -71,7 +71,7 @@ public class UserSubscriptionsService {
 		return new ResponseEntity<> (subDetails, HttpStatus.OK);
 	}
 	
-	public ResponseEntity<Response> subscriptionActivate(List<Integer> subs) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> subscriptionActivate(List<Integer> subs) throws InterruptedException, ExecutionException {
 		if (!subs.isEmpty() || subs.size() > 0) {
 			subs.forEach(sub -> {
 				userSubscriptionsRepository.updateStatusById(sub, AppConstant.ACTIVE_USER);
@@ -81,7 +81,7 @@ public class UserSubscriptionsService {
 		return GeneralUtilities.response("003", "Please provide atlease one subscription.", HttpStatus.INTERNAL_SERVER_ERROR) ;
 	}
 	
-	public ResponseEntity<Response> subscriptionDeActivate(List<Integer> subs) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> subscriptionDeActivate(List<Integer> subs) throws InterruptedException, ExecutionException {
 		if (!subs.isEmpty() || subs.size() > 0) {
 			subs.forEach(sub -> {
 				userSubscriptionsRepository.updateStatusById(sub, AppConstant.INACTIVE_USER);
@@ -91,7 +91,7 @@ public class UserSubscriptionsService {
 		return GeneralUtilities.response("003", "Please provide atlease one subscription.", HttpStatus.INTERNAL_SERVER_ERROR) ;
 	}
 	
-	public ResponseEntity<Response> subscriptionDelete(List<Integer> subs) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> subscriptionDelete(List<Integer> subs) throws InterruptedException, ExecutionException {
 		if (!subs.isEmpty() || subs.size() > 0) {
 			subs.forEach(sub -> {
 				userSubscriptionsRepository.deleteById(sub);

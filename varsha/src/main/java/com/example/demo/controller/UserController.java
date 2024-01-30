@@ -69,7 +69,7 @@ public class UserController {
 	
 	@PostMapping("/changepassword")
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
-	public ResponseEntity<Response> changePassword(@RequestBody ChangePassword user, @CookieValue("user") String loggedinUser) throws InterruptedException, ExecutionException {
+	public ResponseEntity<?> changePassword(@RequestBody ChangePassword user, @CookieValue("user") String loggedinUser) throws InterruptedException, ExecutionException {
 		return userService.changePassword(user);
 	}
 	

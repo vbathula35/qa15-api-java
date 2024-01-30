@@ -17,7 +17,7 @@ import com.google.gson.JsonSyntaxException;
 
 public abstract class GeneralUtilities {
 	
-	public static ResponseEntity<Response> response(String status, String des, HttpStatus httpStatus) {
+	public static ResponseEntity<?> response(String status, String des, HttpStatus httpStatus) {
 		Response res = new Response();
 		res.setStatus(status);
 		res.setDescription(des);
