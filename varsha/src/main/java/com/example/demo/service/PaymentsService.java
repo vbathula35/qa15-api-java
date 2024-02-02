@@ -40,7 +40,7 @@ public class PaymentsService {
 	public ListResponse getPaymentsByProject(String user, AllUserRequest request, int projectId) throws InterruptedException, ExecutionException {
 		ListResponse finalRes = new ListResponse();
 		Page<?> paymentEntityList = null;
-		request.setSortByCol((request.getSortByCol() == null || request.getSortByCol().isEmpty()) ? "month" : request.getSortByCol());
+		request.setSortByCol(request.getSortByCol() == null ? new String[] {"year", "month"} : request.getSortByCol());
 		request.setSortByDirection((request.getSortByDirection() == null || request.getSortByDirection().isEmpty()) ? "DESC" : request.getSortByDirection());
 		PageRequest pageRequest = PageRequest.of(request.getPageNumber(), request.getPageSize(), Sort.by(GeneralUtilities.sortDirection(request.getSortByDirection()), request.getSortByCol()));
 		

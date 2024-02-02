@@ -61,8 +61,8 @@ public class TimeSheetService {
 	public ListResponse getProjectTimesheets(Boolean isAdmin, String user, AllUserRequest request, int projectId) throws InterruptedException, ExecutionException{
 		ListResponse finalRes = new ListResponse();
 		Page<UserTimesheets> timesheetEntityList = null;
-		request.setSortByCol((request.getSortByCol() == null || request.getSortByCol().isEmpty()) ? "month" : request.getSortByCol());
-		request.setSortByDirection((request.getSortByDirection() == null || request.getSortByDirection().isEmpty()) ? "ASC" : request.getSortByDirection());
+		request.setSortByCol((request.getSortByCol() == null) ? new String[] {"year", "month"} : request.getSortByCol());
+		request.setSortByDirection((request.getSortByDirection() == null || request.getSortByDirection().isEmpty()) ? "DESC" : request.getSortByDirection());
 		PageRequest pageRequest = PageRequest.of(request.getPageNumber(), request.getPageSize(), Sort.by(GeneralUtilities.sortDirection(request.getSortByDirection()), request.getSortByCol()));
 		if (request.getFilterBy() == null) {
 			timesheetEntityList = isAdmin ? userTimesheetRepository.findAllTimeSheetsByProject(projectId, pageRequest) : userTimesheetRepository.findAllTimeSheetsByEmailAndProject(user, projectId, pageRequest);

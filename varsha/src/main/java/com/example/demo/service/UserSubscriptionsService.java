@@ -51,7 +51,7 @@ public class UserSubscriptionsService {
 	public ListResponse getAllSubscriptions(AllUserRequest request) throws InterruptedException, ExecutionException {
 		ListResponse finalRes = new ListResponse();
 		Page<UserSubscriptions> subEntityList = null;
-		request.setSortByCol((request.getSortByCol() == null || request.getSortByCol().isEmpty()) ? "subscriptionDate" : request.getSortByCol());
+		request.setSortByCol(request.getSortByCol() == null ? new String[] {"subscriptionDate"} : request.getSortByCol());
 		request.setSortByDirection((request.getSortByDirection() == null || request.getSortByDirection().isEmpty()) ? "DESC" : request.getSortByDirection());
 		
 		PageRequest pageRequest = PageRequest.of(request.getPageNumber(), request.getPageSize(), Sort.by(GeneralUtilities.sortDirection(request.getSortByDirection()), request.getSortByCol()));

@@ -6,7 +6,7 @@ public class AllUserRequest {
 	private Integer pageNumber;
 	private Integer pageSize;
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private String sortByCol;
+	private String[] sortByCol;
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String sortByDirection;
 	@JsonInclude(JsonInclude.Include.NON_NULL)
@@ -39,11 +39,11 @@ public class AllUserRequest {
 	public void setPageSize(Integer pageSize) {
 		this.pageSize = pageSize;
 	}
-	public String getSortByCol() {
+	public String[] getSortByCol() {
 		return sortByCol;
 	}
-	public void setSortByCol(String sortByCol) {
-		this.sortByCol = sortByCol;
+	public void setSortByCol(String[] sort) {
+		this.sortByCol = sort;
 	}
 	public String getSortByDirection() {
 		return sortByDirection;

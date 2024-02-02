@@ -184,7 +184,7 @@ public class UserService {
 		
 		ListResponse finalRes = new ListResponse();
 		Page<Users> userEntityList = null;
-		request.setSortByCol((request.getSortByCol() == null || request.getSortByCol().isEmpty()) ? "firstName" : request.getSortByCol());
+		request.setSortByCol(request.getSortByCol() == null ? new String[] {"firstName"} : request.getSortByCol());
 		request.setSortByDirection((request.getSortByDirection() == null || request.getSortByDirection().isEmpty()) ? "ASC" : request.getSortByDirection());
 		PageRequest pageRequest = PageRequest.of(request.getPageNumber(), request.getPageSize(), Sort.by(GeneralUtilities.sortDirection(request.getSortByDirection()), request.getSortByCol()));
 		if (request.getFilterBy() == null) {

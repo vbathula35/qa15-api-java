@@ -30,7 +30,7 @@ public class UserTaskService {
 	public ListResponse getAllTasks(String user, Boolean isAdmin, AllUserRequest request) throws InterruptedException, ExecutionException {
 		ListResponse finalRes = new ListResponse();
 		Page<UserTask> taskEntityList = null;
-		request.setSortByCol((request.getSortByCol() == null || request.getSortByCol().isEmpty()) ? "taskDate" : request.getSortByCol());
+		request.setSortByCol(request.getSortByCol() == null ? new String[] {"taskDate"} : request.getSortByCol());
 		request.setSortByDirection((request.getSortByDirection() == null || request.getSortByDirection().isEmpty()) ? "DESC" : request.getSortByDirection());
 		
 		PageRequest pageRequest = PageRequest.of(request.getPageNumber(), request.getPageSize(), Sort.by(GeneralUtilities.sortDirection(request.getSortByDirection()), request.getSortByCol()));

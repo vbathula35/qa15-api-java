@@ -174,13 +174,10 @@ public class ProjectController {
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "cookie",name = "user",value = "user",required = true,dataType = "String")})
 	public ResponseEntity<?> checkUserInProject(@CookieValue("user") String user, @RequestParam String email, @RequestParam int projectId) throws InterruptedException, ExecutionException {
 		if (userService.isValidActiveUser(user)) {
-			if (userService.isEditProjectPermission(user) || userService.isSuperAdminUser(user)) {
-				if (projectService.checkUsersInProject(user,email, projectId)) {
-					return GeneralUtilities.response("Yes", email, HttpStatus.OK);		
-				}
-				return GeneralUtilities.response("No", email, HttpStatus.CONFLICT);	
+			if (projectService.checkUsersInProject(user,email, projectId)) {
+				return GeneralUtilities.response("Yes", email, HttpStatus.OK);		
 			}
-			return GeneralUtilities.response("001", AppConstant.USER_NO_PERMISSIONS, HttpStatus.UNAUTHORIZED);
+			return GeneralUtilities.response("No", email, HttpStatus.CONFLICT);
 		}
 		return GeneralUtilities.response("001", AppConstant.UNAUTH_USER, HttpStatus.UNAUTHORIZED);
 	}

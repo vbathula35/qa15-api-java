@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
@@ -82,11 +83,22 @@ public class UserUnprotectedController {
 				headers.set("V-OWNER", response.getEmail());
 		        headers.setExpires(8 * 60 * 60);
 		       
-		        
 		        Cookie cookie = new Cookie("user", response.getEmail());
+		        
 				cookie.setMaxAge(8 * 60 * 60);
 				cookie.setPath("/");
+				cookie.setSecure(true);
+				cookie.setHttpOnly(true);
 				servletResponse.addCookie(cookie);
+				
+//				LocalDateTime localDateTime = LocalDateTime.now();
+//				Cookie cookie1 = new Cookie("loginTime", localDateTime.toString());
+//				cookie1.setMaxAge(8 * 60 * 60);
+//				cookie1.setPath("/");
+//				cookie1.setSecure(true);
+//				cookie1.setHttpOnly(true);
+//				servletResponse.addCookie(cookie1);
+				
 				
 				return ResponseEntity.ok().headers(headers).body(response);
 			} else {
